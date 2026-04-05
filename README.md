@@ -1,85 +1,166 @@
-# dripnsole
+# DripNSole
 
-pnpm monorepo: Fastify API (`apps/server`), Vite + React (`apps/web`), shared packages (`packages/*`).
+**Your thrift. Your store. Everywhere.**
 
-## Requirements
+DripNSole is a thrift e-commerce platform built for the Filipino ukay-ukay community. Sellers get a branded storefront, photo-based 3D spin views for every listing, and one-tap cross-posting to Facebook and Instagram. Buyers get a discovery feed, DMs, offers, and reservations — the same patterns they already use on IG and Carousell, but on a platform that's actually built for thrift.
 
-- Node.js 22+ (aligned with CI; use `nvm`, `fnm`, or `asdf` to match)
-- [pnpm](https://pnpm.io) 9 (`corepack enable && corepack prepare pnpm@9.15.9 --activate`)
+---
+
+## Why
+
+Filipino thrift sellers deal with three problems every day:
+
+1. **Fragmented inventory** — listing the same item on Carousell, Facebook, and Instagram, then manually marking it sold in all three places.
+2. **Low buyer trust** — flat photos don't show condition well, leading to "not as described" disputes.
+3. **No owned storefront** — sellers are guests on other platforms with no brand, no URL, no permanence.
+
+DripNSole fixes all three.
+
+---
+
+## What's Built
+
+| Area | What |
+|---|---|
+| **Landing** | Hero with background overlay, product carousel, category/price grids, about section, how-it-works |
+| **Auth** | Login, signup with "want to sell?" prompt, JWT persistence, route protection |
+| **Store Setup** | 4-step wizard — handle picker with live URL preview, banner/bio/categories, FB/IG OAuth connect, confirmation |
+| **Listing Creation** | Guided 8-slot photo upload (front/back/left/right/sole/tag/defect/detail), spin viewer preview, full form with condition scale, measurements, PHP pricing |
+| **Spin Viewer** | Photo-based drag-to-rotate viewer — auto-plays in feed cards, manual spin on detail page |
+| **Cross-Posting** | Auto-generated caption with #thriftph hashtags, inline edit, FB/IG checkboxes, single + bulk mode |
+| **Seller Dashboard** | Stats overview, listings grid with availability toggle (Available/Reserved/Sold), bulk cross-post |
+| **Public Store Page** | Banner, badge tiers (New Seller → Verified Drip → Top Drip), follow button, filterable listings |
+| **Listing Detail** | Spin view / real photos toggle, measurements grid, offer flow, reserve button, public comments |
+| **Explore** | All listings with filter sidebar (category, condition, price range ₱) and sort |
+| **Search** | Full-text across listing titles, store names, descriptions |
+| **Wishlist** | Saved items with sold/reserved status |
+| **Following** | Feed of new drops from followed stores |
+| **Messaging** | Split-pane DM inbox scoped per listing, inline offer accept/counter/decline |
+| **Notifications** | Bell with unread count, grouped by type (offers, comments, DMs, follows) |
+
+---
+
+## Stack
+
+| Layer | Tech |
+|---|---|
+| Frontend | React 19, TypeScript, Tailwind v4, Vite 6 |
+| State | Zustand with persist middleware |
+| Routing | React Router v7 |
+| Backend | Fastify 4, TypeBox schemas |
+| Database | PostgreSQL (schema in `docs/tech/DATABASE_SCHEMA.md`) |
+| Monorepo | pnpm workspaces + Turborepo |
+
+---
+
+## Project Structure
+
+```
+apps/
+  web/                  @dripnsole/web — React frontend
+    src/
+      components/
+        common/         NotificationBell
+        landing/        Hero, Carousel, Categories, PricePoints, About, HowItWorks
+        layout/         AppLayout, DashboardLayout, Header, Footer
+        listing/        SpinViewer, PhotoUpload, ListingCard, CrossPostModal, CommentsSection
+      pages/            Home, Login, Signup, StoreSetup, Dashboard, CreateListing,
+                        ListingDetail, StorePage, Explore, Search, Wishlist,
+                        Following, Messages, DashboardSettings
+      stores/           auth, store, listing, message, notification, wishlist
+      types/            user, store, listing, message, notification, review
+      routes/           PrivateRoute, PublicRoute
+      styles/           theme.css (Tailwind v4 @theme with design tokens)
+  server/               @dripnsole/server — Fastify API
+packages/
+  config/               @dripnsole/config — Zod env validation
+  core/                 @dripnsole/core — shared types and constants
+docs/
+  MASTER_PROMPT.md      Product vision — single source of truth
+  tech/                 DATABASE_SCHEMA.md (full PostgreSQL DDL)
+  features/             LISTING_CREATION.md, CROSS_POSTING.md
+  flows/                SELLER_ONBOARDING.md, BUYER_PURCHASE.md
+  design/               (planned)
+  business/             (planned)
+```
+
+---
+
+## Design System
+
+| Token | Value |
+|---|---|
+| **Heading font** | Goblin One |
+| **Body font** | Martian Mono |
+| **Brand** | `#2f4550` |
+| **Black** | `#000000` |
+| **Green accent** | `#10b981` |
+| **Red accent** | `#dc2626` |
+| **Surface** | `#f9f9f9` |
+| **Border** | `#e5e7eb` |
+| **Breakpoints** | 480px, 768px (mobile-first) |
+
+---
 
 ## Setup
 
 ```bash
+git clone git@github.com:aeolus87/dripnsole.git
+cd dripnsole
 cp .env.example .env
 pnpm install
 pnpm build
 ```
 
-`apps/server` loads `.env` from the **repository root** using a path derived from the server entry file (not `process.cwd()`), so the file is found whether you run from the repo root or `apps/server`. `apps/web` reads `VITE_*` from the same file (Vite exposes them to the client).
-
-## Dependencies
-
-When adding or upgrading packages, **check current stable versions** (registry or release notes) instead of copying old semver ranges blindly. Prefer `pnpm add <pkg>@latest` (or an explicit version you have verified) for new deps, then run `pnpm lint` and `pnpm typecheck`. Renovate/Dependabot opens weekly PRs; review breaking changes before merging.
-
 ## Develop
 
 ```bash
-pnpm dev
+pnpm dev          # starts web (port 3000) + server (port 4000)
 ```
 
-Or one app at a time:
+Or individually:
 
 ```bash
-make dev:server
-make dev:web
+make dev:web      # React app only
+make dev:server   # API only
+make db:up        # Postgres via Docker
 ```
 
-## API shape
-
-HTTP JSON routes live under **`/api`** (e.g. `GET /api/health`). Route handlers use [TypeBox](https://github.com/sinclairzx81/typebox) schemas via `@fastify/type-provider-typebox` so request/response shapes stay validated and typed.
-
-## Web API client
-
-- `apps/web/src/utils/api.routes.ts` — `BASE_URL` should include the `/api` suffix (see `.env.example`), plus `SOCKET_SERVER` (origin without `/api`)
-- `apps/web/src/utils/axios.instance.ts` — shared Axios client, `Authorization` from `localStorage` key `dripnsole.auth` (Zustand-persist shape)
-- `apps/web/src/hooks/` — e.g. `useApiHealth` calling `GET /health` relative to `BASE_URL` (i.e. `/api/health` when `VITE_API_URL` ends with `/api`)
-
-Override the API base with `VITE_API_URL` (see `.env.example`).
-
-## Database (optional)
-
-Postgres for local development:
+## Quality
 
 ```bash
-make db:up
-```
-
-Defaults match `.env.example` (`DATABASE_URL`). The API does not connect to Postgres until you add a client.
-
-## Quality checks
-
-```bash
-pnpm lint
-pnpm format
 pnpm typecheck
+pnpm lint
 pnpm test
 pnpm test:e2e
 ```
 
-Install Playwright browser once: `make test:e2e-install`.
+---
 
-E2E starts only the web and server dev tasks via Turbo (not the entire workspace graph).
+## Requirements
 
-## Clean
+- Node.js 22+
+- pnpm 9 (`corepack enable && corepack prepare pnpm@9.15.9 --activate`)
+- Docker (for Postgres)
 
-- `pnpm clean` — remove `dist` and `.turbo`
-- `pnpm clean:all` — also remove all `node_modules`
+---
 
-## Workspace layout
+## Terminology
 
-| Path              | Package                                        |
-| ----------------- | ---------------------------------------------- |
-| `apps/server`     | `@dripnsole/server`                        |
-| `apps/web`        | `@dripnsole/web`                           |
-| `packages/config` | `@dripnsole/config` (Zod env)              |
-| `packages/core`   | `@dripnsole/core` (shared types/constants) |
+| Term | Meaning |
+|---|---|
+| **Drip** | A listing / item for sale |
+| **Sole** | A shoe listing |
+| **Spin view** | Photo-based 3D rotating item preview |
+| **Handle** | Seller's unique @username (`dripnsole.ph/@handle`) |
+| **BNWT** | Brand New With Tags |
+| **VNDS** | Very Near Deadstock |
+| **Ukay-ukay** | Filipino term for thrift shopping |
+| **Cross-post** | Auto-publishing a listing to FB/IG |
+| **Top Drip** | Highest seller badge tier |
+
+---
+
+## License
+
+Private. Not open source.
