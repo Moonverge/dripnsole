@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { BASE_URL } from './api.routes'
 
-const AUTH_STORAGE_KEY = 'aeokit.auth'
+const AUTH_STORAGE_KEY = 'dripnsole.auth'
 
 function getTokenFromStore(): string | null {
   try {

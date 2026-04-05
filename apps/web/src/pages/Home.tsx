@@ -1,25 +1,60 @@
-import { appMeta } from '@aeokit-webapp/core'
-import { useApiHealth } from '@/hooks/use-api-health'
+import { useEffect } from 'react'
+import { useAuthStore } from '@/stores/auth.store'
+import { useListingStore } from '@/stores/listing.store'
+import Header from '@/components/layout/Header'
+import Footer from '@/components/layout/Footer'
+import HeroSection from '@/components/landing/HeroSection'
+import FavoritesCarousel from '@/components/landing/FavoritesCarousel'
+import CategoriesSection from '@/components/landing/CategoriesSection'
+import PricePointsSection from '@/components/landing/PricePointsSection'
+import AboutSection from '@/components/landing/AboutSection'
+import HowItWorks from '@/components/landing/HowItWorks'
+import ListingCard from '@/components/listing/ListingCard'
 
-export default function Home() {
-  const apiHealthy = useApiHealth()
+function AuthenticatedFeed() {
+  const { feedListings, fetchFeed, isLoading } = useListingStore()
+
+  useEffect(() => {
+    fetchFeed()
+  }, [fetchFeed])
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center gap-4 bg-neutral-950 text-neutral-100 p-8"
-      data-testid="home-root"
-    >
-      <h1 className="text-3xl font-semibold tracking-tight" data-testid="home-title">
-        {appMeta.name}
-      </h1>
-      <p className="text-neutral-400 text-center max-w-md" data-testid="home-blurb">
-        Monorepo skeleton — add pages, API routes, and packages as you go.
-      </p>
-      <p className="text-sm text-neutral-500" data-testid="home-api-health">
-        {apiHealthy === null && 'API: …'}
-        {apiHealthy === true && 'API: ok'}
-        {apiHealthy === false && 'API: unreachable'}
-      </p>
+    <div className="mx-auto max-w-[1280px] px-4 py-6">
+      <h1 className="mb-6 font-goblin text-2xl font-bold md:text-3xl">Drip Feed</h1>
+      {isLoading ? (
+        <div className="flex min-h-[40vh] items-center justify-center font-martian text-sm text-text-muted">Loading your feed...</div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {feedListings.map((listing) => (
+            <ListingCard key={listing.id} listing={listing} />
+          ))}
+        </div>
+      )}
     </div>
+  )
+}
+
+export default function Home() {
+  const user = useAuthStore((s) => s.user)
+
+  if (user) {
+    return <AuthenticatedFeed />
+  }
+
+  return (
+    <>
+      <Header />
+      <main>
+        <HeroSection />
+        <div className="mx-auto mb-20 max-w-[1280px] px-4">
+          <FavoritesCarousel />
+          <CategoriesSection />
+          <PricePointsSection />
+        </div>
+        <AboutSection />
+        <HowItWorks />
+      </main>
+      <Footer />
+    </>
   )
 }

@@ -2,15 +2,15 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: aeokit
-      POSTGRES_PASSWORD: aeokit_pass
-      POSTGRES_DB: aeokit_db
+      POSTGRES_USER: dripnsole
+      POSTGRES_PASSWORD: dripnsole_pass
+      POSTGRES_DB: dripnsole_db
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U aeokit -d aeokit_db']
+      test: ['CMD-SHELL', 'pg_isready -U dripnsole -d dripnsole_db']
       interval: 5s
       timeout: 5s
       retries: 5

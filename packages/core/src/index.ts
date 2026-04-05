@@ -4,7 +4,7 @@ export type AppMeta = {
 }
 
 export const appMeta: AppMeta = {
-  name: 'aeokit-webapp',
+  name: 'dripnsole',
   version: '0.0.1',
 }
 

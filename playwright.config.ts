@@ -23,7 +23,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'pnpm exec turbo run dev --filter=@aeokit-webapp/web --filter=@aeokit-webapp/server',
+    command: 'pnpm exec turbo run dev --filter=@dripnsole/web --filter=@dripnsole/server',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

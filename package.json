@@ -1,5 +1,5 @@
 {
-  "name": "aeokit-webapp",
+  "name": "dripnsole",
   "private": true,
   "packageManager": "pnpm@9.15.9",
   "engines": {
@@ -12,7 +12,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "test": "turbo run test",
-    "test:coverage": "pnpm --filter @aeokit-webapp/server test:coverage",
+    "test:coverage": "pnpm --filter @dripnsole/server test:coverage",
     "test:e2e": "pnpm exec playwright test",
     "test:all": "pnpm test && pnpm test:e2e",
     "clean": "turbo daemon stop 2>/dev/null || true; rm -rf .turbo && pnpm -r exec -- sh -c 'rm -rf dist'",
