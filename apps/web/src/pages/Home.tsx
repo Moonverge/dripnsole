@@ -4,9 +4,11 @@ import { useListingStore } from '@/stores/listing.store'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import HeroSection from '@/components/landing/HeroSection'
-import FavoritesCarousel from '@/components/landing/FavoritesCarousel'
+import LiveFeedStrip from '@/components/landing/LiveFeedStrip'
+import FreshDropsCarousel from '@/components/landing/FavoritesCarousel'
 import CategoriesSection from '@/components/landing/CategoriesSection'
 import PricePointsSection from '@/components/landing/PricePointsSection'
+import SocialProof from '@/components/landing/SocialProof'
 import AboutSection from '@/components/landing/AboutSection'
 import HowItWorks from '@/components/landing/HowItWorks'
 import ListingCard from '@/components/listing/ListingCard'
@@ -46,13 +48,15 @@ export default function Home() {
       <Header />
       <main>
         <HeroSection />
+        <LiveFeedStrip />
         <div className="mx-auto mb-20 max-w-[1280px] px-4">
-          <FavoritesCarousel />
+          <FreshDropsCarousel />
           <CategoriesSection />
           <PricePointsSection />
         </div>
-        <AboutSection />
         <HowItWorks />
+        <SocialProof />
+        <AboutSection />
       </main>
       <Footer />
     </>

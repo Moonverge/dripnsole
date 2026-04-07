@@ -1,73 +1,78 @@
 import { useRef } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
+import { useAuthStore } from '@/stores/auth.store'
+import { useWishlistStore } from '@/stores/wishlist.store'
 
 const products = [
-  { id: 1, name: 'Vintage Nike Air Max', price: '180', seller: '@sneakerhead', condition: 'Like New', image: '/assets/products/vintageairmax.jpg' },
-  { id: 2, name: 'Supreme Box Logo Tee', price: '250', seller: '@hypebeast', condition: 'New', image: '/assets/products/supremeboxtee.jpg' },
-  { id: 3, name: 'Jordan 1 Chicago', price: '450', seller: '@kicksdealer', condition: 'Used', image: '/assets/products/jordan1chicago.jpg' },
-  { id: 4, name: 'Bape Hoodie', price: '220', seller: '@streetwearking', condition: 'Like New', image: '/assets/products/bapehoodie.jpg' },
-  { id: 5, name: 'Vintage Band Tee', price: '45', seller: '@vintagefinds', condition: 'Used', image: '/assets/products/vintageband.jpg' },
-  { id: 6, name: 'Levis 501 Jeans', price: '75', seller: '@denimhead', condition: 'Used', image: '/assets/products/levis.jpg' },
-  { id: 7, name: 'Champion Sweatshirt', price: '35', seller: '@thriftmaster', condition: 'Used', image: '/assets/products/championsweatshirt.jpg' },
-  { id: 8, name: 'Nike Tech Fleece', price: '85', seller: '@sportswear', condition: 'Like New', image: '/assets/products/niketechfleece.jpg' },
+  { id: 'l1', name: 'Vintage Nike Air Max 97', price: 4500, seller: 'ThriftByKath', condition: 'VNDS', image: '/assets/products/vintageairmax.jpg' },
+  { id: 'l2', name: 'Supreme Box Logo Tee', price: 6500, seller: 'SoleRepublic', condition: 'BNWT', image: '/assets/products/supremeboxtee.jpg' },
+  { id: 'l3', name: 'Jordan 1 Chicago', price: 12000, seller: 'ThriftByKath', condition: '9/10', image: '/assets/products/jordan1chicago.jpg' },
+  { id: 'l4', name: 'Bape Shark Hoodie', price: 8500, seller: 'SoleRepublic', condition: '8/10', image: '/assets/products/bapehoodie.jpg' },
+  { id: 'l5', name: 'Vintage Metallica Band Tee', price: 1200, seller: 'ThriftByKath', condition: 'Thrifted', image: '/assets/products/vintageband.jpg' },
+  { id: 'l6', name: 'Levis 501 Original Fit', price: 1800, seller: 'SoleRepublic', condition: '7/10', image: '/assets/products/levis.jpg' },
+  { id: 'l7', name: 'Champion Reverse Weave', price: 950, seller: 'ThriftByKath', condition: 'Thrifted', image: '/assets/products/championsweatshirt.jpg' },
+  { id: 'l8', name: 'Nike Tech Fleece Joggers', price: 2200, seller: 'SoleRepublic', condition: 'VNDS', image: '/assets/products/niketechfleece.jpg' },
 ]
 
-export default function FavoritesCarousel() {
+export default function FreshDropsCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const user = useAuthStore((s) => s.user)
+  const { toggleSave, isSaved } = useWishlistStore()
+  const navigate = useNavigate()
 
   function scroll(direction: 'left' | 'right') {
-    scrollRef.current?.scrollBy({
-      left: direction === 'left' ? -300 : 300,
-      behavior: 'smooth',
-    })
+    scrollRef.current?.scrollBy({ left: direction === 'left' ? -300 : 300, behavior: 'smooth' })
+  }
+
+  function handleWishlist(e: React.MouseEvent, listingId: string) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!user) { navigate('/login'); return }
+    toggleSave(listingId)
   }
 
   return (
     <section>
-      <h2 className="font-martian text-[1.75rem] my-8 mb-6">24h Favorites</h2>
+      <div className="my-8 mb-6 flex items-center justify-between">
+        <h2 className="font-martian text-[1.75rem]">Fresh Drops</h2>
+        <Link to="/explore" className="font-martian text-sm text-brand no-underline hover:underline">View All →</Link>
+      </div>
       <div className="relative flex items-center gap-4">
-        <button
-          className="absolute -left-5 z-10 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-border bg-white transition-all duration-200 hover:bg-surface-light md:flex"
-          onClick={() => scroll('left')}
-        >
+        <button className="absolute -left-5 z-10 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-border bg-white transition-all duration-200 hover:bg-surface-light md:flex" onClick={() => scroll('left')}>
           <Icon icon="mdi:chevron-left" width={24} height={24} />
         </button>
 
-        <div
-          ref={scrollRef}
-          className="flex gap-6 overflow-x-auto py-4 [-ms-overflow-style:none] [scrollbar-width:none] [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden"
-        >
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="flex-[0_0_280px] cursor-pointer transition-transform duration-200 [scroll-snap-align:start]"
-            >
-              <div className="aspect-square overflow-hidden rounded-2xl bg-surface-light">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-full w-full object-cover object-center"
-                />
-              </div>
-              <div className="mt-4">
-                <div className="flex items-center justify-between">
+        <div ref={scrollRef} className="flex gap-6 overflow-x-auto py-4 [-ms-overflow-style:none] [scrollbar-width:none] [scroll-snap-type:x_mandatory] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
+          {products.map((product) => {
+            const saved = isSaved(product.id)
+            return (
+              <Link key={product.id} to={`/listing/${product.id}`} className="flex-[0_0_280px] no-underline text-black transition-transform duration-200 [scroll-snap-align:start] hover:-translate-y-1">
+                <div className="relative aspect-square overflow-hidden rounded-2xl bg-surface-light">
+                  <img src={product.image} alt={product.name} className="h-full w-full object-cover object-center" />
+                  <span className="absolute left-3 top-3 rounded-full bg-black/70 px-2.5 py-1 font-martian text-[10px] font-bold text-white">{product.condition}</span>
+                  <button onClick={(e) => handleWishlist(e, product.id)} className="absolute right-3 top-3 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/80 backdrop-blur-sm transition-colors hover:bg-white">
+                    <Icon icon={saved ? 'mdi:heart' : 'mdi:heart-outline'} width={18} className={saved ? 'text-accent-red' : 'text-text-muted'} />
+                  </button>
+                </div>
+                <div className="mt-4">
                   <h3 className="font-martian text-sm">{product.name}</h3>
-                  <Icon icon="mdi:heart-outline" width={20} height={20} />
+                  <Link to={`/store/${product.seller}`} onClick={(e) => e.stopPropagation()} className="mt-0.5 block font-martian text-xs text-text-muted no-underline hover:text-brand">@{product.seller}</Link>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="font-martian text-lg font-bold">₱{product.price.toLocaleString()}</span>
+                  </div>
                 </div>
-                <p className="mt-1 font-martian text-sm text-text-muted">{product.seller}</p>
-                <div className="mt-2 flex items-center justify-between">
-                  <span className="font-martian text-lg">${product.price}</span>
-                  <span className="rounded-full bg-surface-light px-3 py-1 font-martian text-xs">{product.condition}</span>
-                </div>
-              </div>
-            </div>
-          ))}
+              </Link>
+            )
+          })}
+
+          <Link to="/explore" className="flex flex-[0_0_280px] flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border no-underline transition-colors hover:border-brand hover:bg-surface-light">
+            <Icon icon="mdi:arrow-right" width={32} className="mb-2 text-text-muted" />
+            <span className="font-martian text-sm font-medium text-text-muted">View All Drips</span>
+          </Link>
         </div>
 
-        <button
-          className="absolute -right-5 z-10 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-border bg-white transition-all duration-200 hover:bg-surface-light md:flex"
-          onClick={() => scroll('right')}
-        >
+        <button className="absolute -right-5 z-10 hidden h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-border bg-white transition-all duration-200 hover:bg-surface-light md:flex" onClick={() => scroll('right')}>
           <Icon icon="mdi:chevron-right" width={24} height={24} />
         </button>
       </div>

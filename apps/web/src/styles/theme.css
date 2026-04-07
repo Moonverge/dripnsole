@@ -23,6 +23,16 @@
   --color-tab-hover: #acacac;
 }
 
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;

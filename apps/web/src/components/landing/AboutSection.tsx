@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function AboutSection() {
   return (
     <section className="bg-black p-[clamp(1rem,3vw,2rem)] text-white max-md:pt-32">
@@ -32,6 +34,21 @@ export default function AboutSection() {
             alt="Item Showcase Extravaganza"
             className="h-[600px] w-full rounded-[2rem] object-cover max-md:h-[clamp(300px,50vw,400px)] max-md:[grid-area:image]"
           />
+        </div>
+
+        <div className="mx-auto mt-8 w-full max-w-[900px] rounded-2xl bg-white/5 p-8 text-center md:p-12">
+          <h2 className="mb-3 font-goblin text-[clamp(1.25rem,3vw,1.75rem)] font-bold">
+            Ready to turn your thrift haul into a store?
+          </h2>
+          <p className="mb-6 font-martian text-sm text-text-faint">
+            Set up your DripNSole store in 2 minutes. No fees, no catch.
+          </p>
+          <Link
+            to="/signup"
+            className="inline-block rounded-full bg-accent-green px-8 py-4 font-martian text-sm font-medium text-white no-underline transition-colors hover:bg-[#0d9668]"
+          >
+            Create Your Store — It's Free
+          </Link>
         </div>
       </div>
     </section>
