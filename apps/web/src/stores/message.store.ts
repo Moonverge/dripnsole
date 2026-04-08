@@ -16,11 +16,15 @@ interface MessageActions {
   sendMessage: (conversationId: string, content: string) => Promise<void>
   startConversation: (listingId: string, initialMessage: string) => Promise<void>
   createOffer: (listingId: string, amount: number) => Promise<void>
-  respondToOffer: (offerId: string, action: 'accepted' | 'declined' | 'countered', counterAmount?: number) => Promise<void>
+  respondToOffer: (
+    offerId: string,
+    action: 'accepted' | 'declined' | 'countered',
+    counterAmount?: number,
+  ) => Promise<void>
   setActiveConversation: (conversation: Conversation | null) => void
 }
 
-export const useMessageStore = create<MessageState & MessageActions>()((set, get) => ({
+export const useMessageStore = create<MessageState & MessageActions>()((set) => ({
   conversations: [],
   messages: [],
   activeConversation: null,

@@ -8,7 +8,6 @@ export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [wantToSell, setWantToSell] = useState<boolean | null>(null)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'form' | 'sell-prompt'>('form')
 
@@ -24,7 +23,6 @@ export default function Signup() {
   }
 
   function handleSellChoice(sell: boolean) {
-    setWantToSell(sell)
     if (sell) {
       navigate('/store-setup')
     } else {
@@ -69,15 +67,21 @@ export default function Signup() {
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
       <div className="w-full max-w-md">
         <h1 className="mb-2 text-center font-goblin text-4xl font-bold">Join DripNSole</h1>
-        <p className="mb-8 text-center font-martian text-sm text-text-muted">Your thrift. Your store. Everywhere.</p>
+        <p className="mb-8 text-center font-martian text-sm text-text-muted">
+          Your thrift. Your store. Everywhere.
+        </p>
 
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 font-martian text-sm text-accent-red">{error}</div>
+          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 font-martian text-sm text-accent-red">
+            {error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">Name</label>
+            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">
+              Name
+            </label>
             <input
               type="text"
               value={name}
@@ -88,7 +92,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">Email</label>
+            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -99,7 +105,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">Password</label>
+            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -121,7 +129,9 @@ export default function Signup() {
 
         <p className="mt-6 text-center font-martian text-sm text-text-muted">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-brand no-underline hover:underline">Sign In</Link>
+          <Link to="/login" className="font-medium text-brand no-underline hover:underline">
+            Sign In
+          </Link>
         </p>
       </div>
     </div>
