@@ -1,25 +1,27 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Home from '@/pages/Home'
 
+function renderHome() {
+  return render(
+    <MemoryRouter>
+      <Home />
+    </MemoryRouter>,
+  )
+}
+
 describe('Home', () => {
   it('renders the landing page hero title', () => {
-    render(
-      <MemoryRouter>
-        <Home />
-      </MemoryRouter>,
-    )
-    expect(screen.getByText('DripNSole')).toBeTruthy()
+    const { container } = renderHome()
+    const main = within(container).getByRole('main')
+    expect(within(main).getByRole('heading', { level: 1, name: 'DripNSole' })).toBeTruthy()
   })
 
-  it('renders CTA buttons', () => {
-    render(
-      <MemoryRouter>
-        <Home />
-      </MemoryRouter>,
-    )
-    expect(screen.getByText('Start Selling')).toBeTruthy()
-    expect(screen.getByText('Discover Items')).toBeTruthy()
+  it('renders hero CTA links', () => {
+    const { container } = renderHome()
+    const main = within(container).getByRole('main')
+    expect(within(main).getByRole('link', { name: /Start Selling Free/i })).toBeTruthy()
+    expect(within(main).getByRole('link', { name: /Shop Thrift Finds/i })).toBeTruthy()
   })
 })
