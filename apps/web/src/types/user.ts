@@ -4,6 +4,7 @@ export interface User {
   name: string
   profilePic?: string
   isSeller: boolean
+  emailVerified?: boolean
   createdAt: string
 }
 

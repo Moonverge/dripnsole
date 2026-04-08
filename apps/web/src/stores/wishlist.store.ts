@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Listing } from '@/types/listing'
-import { MOCK_LISTINGS } from '@/utils/mock-data'
+import { axiosInstance } from '@/utils/axios.instance'
+import { LISTING_SAVE } from '@/utils/api.routes'
 
 interface WishlistState {
   savedIds: string[]
@@ -24,19 +25,18 @@ export const useWishlistStore = create<WishlistState & WishlistActions>()(
 
       fetchWishlist: async () => {
         set({ isLoading: true })
-        await new Promise((r) => setTimeout(r, 400))
-        const { savedIds } = get()
-        const items = MOCK_LISTINGS.filter((l) => savedIds.includes(l.id))
-        set({ items, isLoading: false })
+        set({ isLoading: false })
       },
 
       toggleSave: async (listingId: string) => {
-        await new Promise((r) => setTimeout(r, 200))
+        const { data } = await axiosInstance.post<{ success: boolean; data?: { saved: boolean } }>(
+          LISTING_SAVE(listingId),
+        )
+        const saved = Boolean(data.data?.saved)
         set((state) => {
-          const alreadySaved = state.savedIds.includes(listingId)
-          const savedIds = alreadySaved
-            ? state.savedIds.filter((id) => id !== listingId)
-            : [...state.savedIds, listingId]
+          const savedIds = saved
+            ? [...new Set([...state.savedIds, listingId])]
+            : state.savedIds.filter((id) => id !== listingId)
           return { savedIds }
         })
       },
