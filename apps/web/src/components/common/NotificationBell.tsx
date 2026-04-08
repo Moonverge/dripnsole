@@ -51,7 +51,9 @@ export default function NotificationBell() {
           </div>
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
-              <p className="p-4 text-center font-martian text-sm text-text-muted">No notifications</p>
+              <p className="p-4 text-center font-martian text-sm text-text-muted">
+                No notifications
+              </p>
             ) : (
               notifications.map((n) => (
                 <Link

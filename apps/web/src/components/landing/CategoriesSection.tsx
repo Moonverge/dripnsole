@@ -2,10 +2,30 @@ import { Link } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 
 const categories = [
-  { name: 'Men', icon: 'mdi:human-male', itemCount: '2.5k items', href: '/explore?category=Clothes&subcategory=Tops' },
-  { name: 'Women', icon: 'mdi:human-female', itemCount: '3.1k items', href: '/explore?category=Clothes&subcategory=Dresses' },
-  { name: 'Vintage', icon: 'mdi:tshirt-crew', itemCount: '1.2k items', href: '/explore?condition=Thrifted' },
-  { name: 'Luxury', icon: 'mdi:diamond-stone', itemCount: '500+ items', href: '/explore?priceMin=5000' },
+  {
+    name: 'Men',
+    icon: 'mdi:human-male',
+    itemCount: '2.5k items',
+    href: '/explore?category=Clothes&subcategory=Tops',
+  },
+  {
+    name: 'Women',
+    icon: 'mdi:human-female',
+    itemCount: '3.1k items',
+    href: '/explore?category=Clothes&subcategory=Dresses',
+  },
+  {
+    name: 'Vintage',
+    icon: 'mdi:tshirt-crew',
+    itemCount: '1.2k items',
+    href: '/explore?condition=Thrifted',
+  },
+  {
+    name: 'Luxury',
+    icon: 'mdi:diamond-stone',
+    itemCount: '500+ items',
+    href: '/explore?priceMin=5000',
+  },
 ]
 
 export default function CategoriesSection() {

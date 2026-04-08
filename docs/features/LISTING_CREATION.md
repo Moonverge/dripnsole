@@ -65,18 +65,18 @@ Buyers filter by category, size, and condition; couriers (**Lalamove**, **LBC**,
 
 ### How it works
 
-| Field | Behavior |
-|--------|----------|
-| **Title** | Short, searchable name of the item. |
-| **Category** | **Clothes** or **Sole** (shoes and footwear). |
-| **Subcategory** | e.g., tees, sneakers (exact list is defined in the app). |
-| **Condition** | **BNWT, BNWOT, VNDS, 9/10, 8/10, 7/10, Thrifted**—common resale/thrift shorthand. |
-| **Standard size** | Apparel: **XS–5XL**; shoes: **EU / US / UK** as applicable. |
-| **Measurements** | In **cm** for clothes (and shoe length where collected). |
-| **Price** | Amount in **PHP**. |
-| **Negotiable** | Toggle; when on, buyers can make offers (see purchase flow). |
-| **Shipping options** | **Lalamove**, **LBC**, **J&T**—seller indicates what they support. |
-| **Description** | Free text: flaws, fit notes, story, meetup notes in DM. |
+| Field                | Behavior                                                                          |
+| -------------------- | --------------------------------------------------------------------------------- |
+| **Title**            | Short, searchable name of the item.                                               |
+| **Category**         | **Clothes** or **Sole** (shoes and footwear).                                     |
+| **Subcategory**      | e.g., tees, sneakers (exact list is defined in the app).                          |
+| **Condition**        | **BNWT, BNWOT, VNDS, 9/10, 8/10, 7/10, Thrifted**—common resale/thrift shorthand. |
+| **Standard size**    | Apparel: **XS–5XL**; shoes: **EU / US / UK** as applicable.                       |
+| **Measurements**     | In **cm** for clothes (and shoe length where collected).                          |
+| **Price**            | Amount in **PHP**.                                                                |
+| **Negotiable**       | Toggle; when on, buyers can make offers (see purchase flow).                      |
+| **Shipping options** | **Lalamove**, **LBC**, **J&T**—seller indicates what they support.                |
+| **Description**      | Free text: flaws, fit notes, story, meetup notes in DM.                           |
 
 **Availability** defaults to **Available** until the seller marks the item sold or delists it.
 
@@ -113,17 +113,17 @@ Many Filipino sellers already move inventory on social; DripNSole surfaces the a
 
 ## Validation summary (edge cases)
 
-| Area | Rule |
-|------|------|
-| **Minimum photos** | At least **3** images required to publish. |
-| **Maximum photos** | At most **8** images. |
-| **Required fields** | Title, category, condition, price, and other fields marked required in-app must be complete. |
-| **Price** | Valid **PHP** amount: positive number, within min/max if the platform enforces caps; no empty or zero if disallowed. |
+| Area                | Rule                                                                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **Minimum photos**  | At least **3** images required to publish.                                                                           |
+| **Maximum photos**  | At most **8** images.                                                                                                |
+| **Required fields** | Title, category, condition, price, and other fields marked required in-app must be complete.                         |
+| **Price**           | Valid **PHP** amount: positive number, within min/max if the platform enforces caps; no empty or zero if disallowed. |
 
 ---
 
 ## See also
 
-- [CROSS_POSTING.md](./CROSS_POSTING.md) — Facebook and Instagram cross-posting after publish  
-- [../flows/SELLER_ONBOARDING.md](../flows/SELLER_ONBOARDING.md) — store setup and first Drip  
-- [../flows/BUYER_PURCHASE.md](../flows/BUYER_PURCHASE.md) — how buyers view Spin view, negotiate, and complete a sale  
+- [CROSS_POSTING.md](./CROSS_POSTING.md) — Facebook and Instagram cross-posting after publish
+- [../flows/SELLER_ONBOARDING.md](../flows/SELLER_ONBOARDING.md) — store setup and first Drip
+- [../flows/BUYER_PURCHASE.md](../flows/BUYER_PURCHASE.md) — how buyers view Spin view, negotiate, and complete a sale

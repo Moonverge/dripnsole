@@ -3,16 +3,26 @@ import { useParams } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useStoreStore } from '@/stores/store.store'
 import { useAuthStore } from '@/stores/auth.store'
-import { MOCK_LISTINGS } from '@/utils/mock-data'
 import ListingCard from '@/components/listing/ListingCard'
 import type { ListingCondition } from '@/types/listing'
 
 const BADGE_LABELS = { new: 'New Seller', verified: 'Verified Drip', top: 'Top Drip' }
-const BADGE_COLORS = { new: 'bg-surface-light text-text-secondary', verified: 'bg-brand/10 text-brand', top: 'bg-yellow-100 text-yellow-700' }
+const BADGE_COLORS = {
+  new: 'bg-surface-light text-text-secondary',
+  verified: 'bg-brand/10 text-brand',
+  top: 'bg-yellow-100 text-yellow-700',
+}
 
 export default function StorePage() {
   const { handle } = useParams<{ handle: string }>()
-  const { viewedStore, fetchStoreByHandle, followStore, unfollowStore, isLoading } = useStoreStore()
+  const {
+    viewedStore,
+    viewedStoreListings,
+    fetchStoreByHandle,
+    followStore,
+    unfollowStore,
+    isLoading,
+  } = useStoreStore()
   const user = useAuthStore((s) => s.user)
   const [following, setFollowing] = useState(false)
   const [filterCondition, setFilterCondition] = useState<ListingCondition | ''>('')
@@ -22,18 +32,22 @@ export default function StorePage() {
   }, [handle, fetchStoreByHandle])
 
   if (isLoading || !viewedStore) {
-    return <div className="flex min-h-[50vh] items-center justify-center font-martian text-sm text-text-muted">Loading store...</div>
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center font-martian text-sm text-text-muted">
+        Loading store...
+      </div>
+    )
   }
 
-  const storeListings = MOCK_LISTINGS
-    .filter((l) => l.storeId === viewedStore.id)
-    .filter((l) => !filterCondition || l.condition === filterCondition)
+  const storeListings = viewedStoreListings.filter(
+    (l) => !filterCondition || l.condition === filterCondition,
+  )
 
   async function handleFollow() {
     if (following) {
-      await unfollowStore(viewedStore!.id)
+      await unfollowStore(viewedStore!.handle)
     } else {
-      await followStore(viewedStore!.id)
+      await followStore(viewedStore!.handle)
     }
     setFollowing(!following)
   }
@@ -51,21 +65,32 @@ export default function StorePage() {
           <div>
             <div className="mb-1 flex items-center gap-3">
               <h1 className="font-martian text-xl font-bold md:text-2xl">{viewedStore.name}</h1>
-              <span className={`rounded-full px-3 py-1 font-martian text-[10px] font-bold ${BADGE_COLORS[viewedStore.badge]}`}>
+              <span
+                className={`rounded-full px-3 py-1 font-martian text-[10px] font-bold ${BADGE_COLORS[viewedStore.badge]}`}
+              >
                 {BADGE_LABELS[viewedStore.badge]}
               </span>
             </div>
             <p className="font-martian text-sm text-text-muted">@{viewedStore.handle}</p>
-            <p className="mt-2 max-w-lg font-martian text-sm text-text-secondary">{viewedStore.bio}</p>
+            <p className="mt-2 max-w-lg font-martian text-sm text-text-secondary">
+              {viewedStore.bio}
+            </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {viewedStore.categories.map((cat) => (
-                <span key={cat} className="rounded-full bg-surface-light px-3 py-1 font-martian text-[10px]">{cat}</span>
+                <span
+                  key={cat}
+                  className="rounded-full bg-surface-light px-3 py-1 font-martian text-[10px]"
+                >
+                  {cat}
+                </span>
               ))}
             </div>
 
             <div className="mt-3 flex gap-4 font-martian text-xs text-text-muted">
-              <span>⭐ {viewedStore.rating} ({viewedStore.reviewCount})</span>
+              <span>
+                ⭐ {viewedStore.rating} ({viewedStore.reviewCount})
+              </span>
               <span>{viewedStore.completedTransactions} sales</span>
               <span>{viewedStore.followerCount} followers</span>
             </div>
@@ -115,7 +140,9 @@ export default function StorePage() {
           </div>
 
           {storeListings.length === 0 && (
-            <p className="py-12 text-center font-martian text-sm text-text-muted">No listings yet.</p>
+            <p className="py-12 text-center font-martian text-sm text-text-muted">
+              No listings yet.
+            </p>
           )}
         </div>
       </div>

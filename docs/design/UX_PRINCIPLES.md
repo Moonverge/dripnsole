@@ -15,7 +15,7 @@ The landing page is designed to convert two audiences simultaneously: **buyers**
 
 1. **Header** — Logo, SHOP (→ /explore) and SELL (→ context-aware: signup → store setup → dashboard) tabs, search bar routing to /search, guest auth buttons (Log In / Sign Up) or user avatar dropdown when authenticated.
 
-2. **Hero** — Full-bleed background image at 40% opacity. Title in Goblin One. One-line value prop: *"The thrift store for PH sneakers and clothes — with 3D item views and one-tap FB & IG posting."* Two CTAs:
+2. **Hero** — Full-bleed background image at 40% opacity. Title in Goblin One. One-line value prop: _"The thrift store for PH sneakers and clothes — with 3D item views and one-tap FB & IG posting."_ Two CTAs:
    - Primary (green, large): **Shop Thrift Finds** → /explore
    - Secondary (outlined): **Start Selling Free** → /signup
    - Mobile: stacked vertically, full width at 480px breakpoint.
@@ -48,12 +48,12 @@ The landing page is designed to convert two audiences simultaneously: **buyers**
 
 ### Conversion Paths
 
-| Visitor Type | Primary Path | Secondary Path |
-|---|---|---|
-| Buyer (guest) | Hero "Shop Thrift Finds" → /explore → listing → /login → wishlist/offer | Fresh Drops card → /listing/:id → /login |
-| Seller (guest) | Hero "Start Selling Free" → /signup → sell prompt → /store-setup | About CTA → /signup |
-| Returning buyer | Header SHOP → /explore | Search bar → /search |
-| Returning seller | Header SELL → /dashboard | Header avatar → Dashboard |
+| Visitor Type     | Primary Path                                                            | Secondary Path                           |
+| ---------------- | ----------------------------------------------------------------------- | ---------------------------------------- |
+| Buyer (guest)    | Hero "Shop Thrift Finds" → /explore → listing → /login → wishlist/offer | Fresh Drops card → /listing/:id → /login |
+| Seller (guest)   | Hero "Start Selling Free" → /signup → sell prompt → /store-setup        | About CTA → /signup                      |
+| Returning buyer  | Header SHOP → /explore                                                  | Search bar → /search                     |
+| Returning seller | Header SELL → /dashboard                                                | Header avatar → Dashboard                |
 
 ### Key UX Decisions
 

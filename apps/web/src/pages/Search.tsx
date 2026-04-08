@@ -26,7 +26,11 @@ export default function Search() {
     <div className="mx-auto max-w-[1280px] px-4 py-6">
       <form onSubmit={handleSearch} className="mb-8">
         <div className="relative">
-          <Icon icon="ph:magnifying-glass" width={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted" />
+          <Icon
+            icon="ph:magnifying-glass"
+            width={20}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted"
+          />
           <input
             type="search"
             value={query}
@@ -47,7 +51,9 @@ export default function Search() {
       {!initialQuery && !isLoading && (
         <div className="flex min-h-[40vh] flex-col items-center justify-center">
           <Icon icon="ph:magnifying-glass" width={48} className="mb-3 text-text-muted" />
-          <p className="font-martian text-sm text-text-muted">Search across listings, store names, and tags</p>
+          <p className="font-martian text-sm text-text-muted">
+            Search across listings, store names, and tags
+          </p>
         </div>
       )}
 
@@ -62,7 +68,9 @@ export default function Search() {
       {initialQuery && !isLoading && listings.length === 0 && (
         <div className="flex min-h-[30vh] flex-col items-center justify-center">
           <p className="font-martian text-sm text-text-muted">No results for "{initialQuery}"</p>
-          <p className="mt-1 font-martian text-xs text-text-faint">Try different keywords or browse categories</p>
+          <p className="mt-1 font-martian text-xs text-text-faint">
+            Try different keywords or browse categories
+          </p>
         </div>
       )}
     </div>

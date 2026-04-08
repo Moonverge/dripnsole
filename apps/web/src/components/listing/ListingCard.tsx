@@ -26,7 +26,9 @@ export default function ListingCard({ listing, showStore = true }: ListingCardPr
         <div className="relative">
           <SpinViewer photos={photos} autoPlay size="sm" />
           {availabilityBadge && (
-            <span className={`absolute left-3 top-3 rounded-full px-3 py-1 font-martian text-[10px] font-bold ${availabilityBadge.className}`}>
+            <span
+              className={`absolute left-3 top-3 rounded-full px-3 py-1 font-martian text-[10px] font-bold ${availabilityBadge.className}`}
+            >
               {availabilityBadge.label}
             </span>
           )}
@@ -39,16 +41,27 @@ export default function ListingCard({ listing, showStore = true }: ListingCardPr
             <p className="mt-0.5 font-martian text-xs text-text-muted">@{listing.storeHandle}</p>
           )}
           <div className="mt-1.5 flex items-center justify-between">
-            <span className="font-martian text-base font-bold">₱{listing.price.toLocaleString()}</span>
-            <span className="rounded-full bg-surface-light px-2.5 py-0.5 font-martian text-[10px]">{listing.condition}</span>
+            <span className="font-martian text-base font-bold">
+              ₱{listing.price.toLocaleString()}
+            </span>
+            <span className="rounded-full bg-surface-light px-2.5 py-0.5 font-martian text-[10px]">
+              {listing.condition}
+            </span>
           </div>
         </div>
       </Link>
       <button
-        onClick={(e) => { e.preventDefault(); toggleSave(listing.id) }}
+        onClick={(e) => {
+          e.preventDefault()
+          toggleSave(listing.id)
+        }}
         className="absolute right-2 top-2 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-white/80 backdrop-blur-sm transition-colors hover:bg-white"
       >
-        <Icon icon={saved ? 'mdi:heart' : 'mdi:heart-outline'} width={18} className={saved ? 'text-accent-red' : 'text-text-muted'} />
+        <Icon
+          icon={saved ? 'mdi:heart' : 'mdi:heart-outline'}
+          width={18}
+          className={saved ? 'text-accent-red' : 'text-text-muted'}
+        />
       </button>
     </div>
   )

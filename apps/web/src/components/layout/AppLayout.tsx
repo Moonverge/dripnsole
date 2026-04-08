@@ -34,9 +34,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
           {user && (
             <div className="hidden gap-1 md:flex">
-              <Link to="/explore" className="rounded px-3 py-2 font-martian text-sm font-medium no-underline text-black hover:bg-surface-light">SHOP</Link>
+              <Link
+                to="/explore"
+                className="rounded px-3 py-2 font-martian text-sm font-medium no-underline text-black hover:bg-surface-light"
+              >
+                SHOP
+              </Link>
               {user.isSeller && (
-                <Link to="/dashboard" className="rounded px-3 py-2 font-martian text-sm font-medium no-underline text-black hover:bg-surface-light">SELL</Link>
+                <Link
+                  to="/dashboard"
+                  className="rounded px-3 py-2 font-martian text-sm font-medium no-underline text-black hover:bg-surface-light"
+                >
+                  SELL
+                </Link>
               )}
             </div>
           )}
@@ -74,8 +84,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </>
             ) : (
               <div className="flex gap-2">
-                <Link to="/login" className="rounded-full bg-black px-4 py-2 font-martian text-xs text-white no-underline">Log In</Link>
-                <Link to="/signup" className="hidden rounded-full border border-black px-4 py-2 font-martian text-xs text-black no-underline md:block">Sign Up</Link>
+                <Link
+                  to="/login"
+                  className="rounded-full bg-black px-4 py-2 font-martian text-xs text-white no-underline"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  className="hidden rounded-full border border-black px-4 py-2 font-martian text-xs text-black no-underline md:block"
+                >
+                  Sign Up
+                </Link>
               </div>
             )}
           </div>
@@ -83,11 +103,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       </nav>
 
       {sidebarOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 md:hidden" onClick={() => setSidebarOpen(false)}>
-          <div className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 bg-black/50 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <div
+            className="fixed inset-y-0 left-0 w-72 overflow-y-auto bg-white"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between border-b border-border p-4">
               <span className="font-martian text-lg font-bold">DripNSole</span>
-              <button className="cursor-pointer border-none bg-none p-2" onClick={() => setSidebarOpen(false)}>
+              <button
+                className="cursor-pointer border-none bg-none p-2"
+                onClick={() => setSidebarOpen(false)}
+              >
                 <Icon icon="heroicons:x-mark" width={24} height={24} />
               </button>
             </div>
@@ -97,19 +126,59 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <p className="mb-1 font-martian text-sm font-bold">{user.name}</p>
                 <p className="mb-4 font-martian text-xs text-text-muted">{user.email}</p>
                 <nav className="flex flex-col gap-1">
-                  <Link to="/explore" onClick={() => setSidebarOpen(false)} className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light">Explore</Link>
-                  <Link to="/following" onClick={() => setSidebarOpen(false)} className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light">Following</Link>
-                  <Link to="/wishlist" onClick={() => setSidebarOpen(false)} className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light">Wishlist</Link>
-                  <Link to="/messages" onClick={() => setSidebarOpen(false)} className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light">Messages</Link>
+                  <Link
+                    to="/explore"
+                    onClick={() => setSidebarOpen(false)}
+                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                  >
+                    Explore
+                  </Link>
+                  <Link
+                    to="/following"
+                    onClick={() => setSidebarOpen(false)}
+                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                  >
+                    Following
+                  </Link>
+                  <Link
+                    to="/wishlist"
+                    onClick={() => setSidebarOpen(false)}
+                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                  >
+                    Wishlist
+                  </Link>
+                  <Link
+                    to="/messages"
+                    onClick={() => setSidebarOpen(false)}
+                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                  >
+                    Messages
+                  </Link>
                   {user.isSeller && (
-                    <Link to="/dashboard" onClick={() => setSidebarOpen(false)} className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light">Dashboard</Link>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setSidebarOpen(false)}
+                      className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                    >
+                      Dashboard
+                    </Link>
                   )}
                   {!user.isSeller && (
-                    <Link to="/store-setup" onClick={() => setSidebarOpen(false)} className="rounded px-3 py-2.5 font-martian text-sm text-brand no-underline hover:bg-surface-light">Start Selling</Link>
+                    <Link
+                      to="/store-setup"
+                      onClick={() => setSidebarOpen(false)}
+                      className="rounded px-3 py-2.5 font-martian text-sm text-brand no-underline hover:bg-surface-light"
+                    >
+                      Start Selling
+                    </Link>
                   )}
                   <div className="my-2 h-px bg-border" />
                   <button
-                    onClick={() => { logout(); setSidebarOpen(false); navigate('/') }}
+                    onClick={() => {
+                      logout()
+                      setSidebarOpen(false)
+                      navigate('/')
+                    }}
                     className="cursor-pointer rounded border-none bg-none px-3 py-2.5 text-left font-martian text-sm text-accent-red"
                   >
                     Log Out
@@ -118,8 +187,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               </div>
             ) : (
               <div className="p-4">
-                <Link to="/login" onClick={() => setSidebarOpen(false)} className="mb-2 block rounded-full bg-black py-3 text-center font-martian text-sm text-white no-underline">Log In</Link>
-                <Link to="/signup" onClick={() => setSidebarOpen(false)} className="block rounded-full border border-black py-3 text-center font-martian text-sm text-black no-underline">Sign Up</Link>
+                <Link
+                  to="/login"
+                  onClick={() => setSidebarOpen(false)}
+                  className="mb-2 block rounded-full bg-black py-3 text-center font-martian text-sm text-white no-underline"
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setSidebarOpen(false)}
+                  className="block rounded-full border border-black py-3 text-center font-martian text-sm text-black no-underline"
+                >
+                  Sign Up
+                </Link>
               </div>
             )}
           </div>

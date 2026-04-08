@@ -2,10 +2,34 @@ import { Link } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 
 const priceRanges = [
-  { name: 'Steals', icon: 'mdi:tag-multiple', range: 'Under ₱500', description: 'Amazing finds on a budget', href: '/explore?priceMax=500' },
-  { name: 'Mid-Range', icon: 'mdi:cash', range: '₱500 – ₱2,000', description: 'Quality everyday pieces', href: '/explore?priceMin=500&priceMax=2000' },
-  { name: 'Premium', icon: 'mdi:star', range: '₱2,000 – ₱5,000', description: 'High-end streetwear', href: '/explore?priceMin=2000&priceMax=5000' },
-  { name: 'Grails', icon: 'mdi:crown', range: '₱5,000+', description: 'Rare & collectible items', href: '/explore?priceMin=5000' },
+  {
+    name: 'Steals',
+    icon: 'mdi:tag-multiple',
+    range: 'Under ₱500',
+    description: 'Amazing finds on a budget',
+    href: '/explore?priceMax=500',
+  },
+  {
+    name: 'Mid-Range',
+    icon: 'mdi:cash',
+    range: '₱500 – ₱2,000',
+    description: 'Quality everyday pieces',
+    href: '/explore?priceMin=500&priceMax=2000',
+  },
+  {
+    name: 'Premium',
+    icon: 'mdi:star',
+    range: '₱2,000 – ₱5,000',
+    description: 'High-end streetwear',
+    href: '/explore?priceMin=2000&priceMax=5000',
+  },
+  {
+    name: 'Grails',
+    icon: 'mdi:crown',
+    range: '₱5,000+',
+    description: 'Rare & collectible items',
+    href: '/explore?priceMin=5000',
+  },
 ]
 
 export default function PricePointsSection() {

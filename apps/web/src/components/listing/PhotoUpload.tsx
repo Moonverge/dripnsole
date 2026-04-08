@@ -43,7 +43,9 @@ export default function PhotoUpload({ photos, onChange }: PhotoUploadProps) {
 
   return (
     <div>
-      <p className="mb-1 font-martian text-xs text-text-muted">Min 3, max 8 photos. Follow the shot list for best spin view.</p>
+      <p className="mb-1 font-martian text-xs text-text-muted">
+        Min 3, max 8 photos. Follow the shot list for best spin view.
+      </p>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {SHOT_LIST.map(({ slot, label, required }) => (
           <div key={slot} className="relative">
@@ -56,13 +58,17 @@ export default function PhotoUpload({ photos, onChange }: PhotoUploadProps) {
                 >
                   <Icon icon="mdi:close" width={14} className="text-white" />
                 </button>
-                <span className="absolute bottom-2 left-2 rounded bg-black/70 px-2 py-0.5 font-martian text-[10px] text-white">{label}</span>
+                <span className="absolute bottom-2 left-2 rounded bg-black/70 px-2 py-0.5 font-martian text-[10px] text-white">
+                  {label}
+                </span>
               </div>
             ) : (
               <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-surface-light transition-colors hover:border-brand">
                 <Icon icon="mdi:camera-plus-outline" width={24} className="text-text-muted" />
                 <span className="mt-1 font-martian text-[10px] text-text-muted">{label}</span>
-                {required && <span className="font-martian text-[9px] text-accent-red">Required</span>}
+                {required && (
+                  <span className="font-martian text-[9px] text-accent-red">Required</span>
+                )}
                 <input
                   type="file"
                   accept="image/*"

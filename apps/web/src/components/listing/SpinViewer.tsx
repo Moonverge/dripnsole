@@ -55,7 +55,13 @@ export default function SpinViewer({ photos, autoPlay = false, size = 'md' }: Sp
   }, [autoPlay, photos.length, isDragging])
 
   if (photos.length === 0) {
-    return <div className={`${sizeClass} flex items-center justify-center rounded-2xl bg-surface-light font-martian text-sm text-text-muted`}>No photos</div>
+    return (
+      <div
+        className={`${sizeClass} flex items-center justify-center rounded-2xl bg-surface-light font-martian text-sm text-text-muted`}
+      >
+        No photos
+      </div>
+    )
   }
 
   return (
@@ -80,7 +86,10 @@ export default function SpinViewer({ photos, autoPlay = false, size = 'md' }: Sp
         <>
           <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
             {photos.map((_, i) => (
-              <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`} />
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
+              />
             ))}
           </div>
           <div className="absolute left-3 top-3 rounded-full bg-black/60 px-2 py-0.5 font-martian text-[10px] text-white">

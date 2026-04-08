@@ -1,15 +1,39 @@
 import { useState } from 'react'
 
 const BUYER_STEPS = [
-  { title: 'Browse Thousands of Thrift Finds', description: 'Explore drips across sneakers, clothes, vintage, and luxury — all from Filipino sellers.' },
-  { title: 'Spin the Item in 3D', description: 'Drag to rotate. See every angle. Then tap "Real Photos" for close-ups on condition and defects.' },
-  { title: 'DM, Offer, Reserve & Pay', description: 'Message the seller, make an offer in PHP, reserve the item, and arrange shipping or meetup via GCash or COD.' },
+  {
+    title: 'Browse Thousands of Thrift Finds',
+    description:
+      'Explore drips across sneakers, clothes, vintage, and luxury — all from Filipino sellers.',
+  },
+  {
+    title: 'Spin the Item in 3D',
+    description:
+      'Drag to rotate. See every angle. Then tap "Real Photos" for close-ups on condition and defects.',
+  },
+  {
+    title: 'DM, Offer, Reserve & Pay',
+    description:
+      'Message the seller, make an offer in PHP, reserve the item, and arrange shipping or meetup via GCash or COD.',
+  },
 ]
 
 const SELLER_STEPS = [
-  { title: 'Create Your Free Store in 2 Minutes', description: 'Pick a handle, upload a banner, write a bio. Your store goes live at dripnsole.ph/@yourname.' },
-  { title: 'Upload Photos — We Generate the Spin View', description: 'Follow the guided shot list. We stitch your photos into a drag-to-rotate 3D preview automatically.' },
-  { title: 'Post to Facebook & Instagram in One Tap', description: 'Auto-generated captions with hashtags. Select listings, pick platforms, hit post. Done.' },
+  {
+    title: 'Create Your Free Store in 2 Minutes',
+    description:
+      'Pick a handle, upload a banner, write a bio. Your store goes live at dripnsole.ph/@yourname.',
+  },
+  {
+    title: 'Upload Photos — We Generate the Spin View',
+    description:
+      'Follow the guided shot list. We stitch your photos into a drag-to-rotate 3D preview automatically.',
+  },
+  {
+    title: 'Post to Facebook & Instagram in One Tap',
+    description:
+      'Auto-generated captions with hashtags. Select listings, pick platforms, hit post. Done.',
+  },
 ]
 
 export default function HowItWorks() {
@@ -17,7 +41,10 @@ export default function HowItWorks() {
   const steps = role === 'buyer' ? BUYER_STEPS : SELLER_STEPS
 
   return (
-    <section id="how-it-works" className="mt-[1%] flex min-h-[80vh] w-full flex-col overflow-x-hidden bg-white p-[clamp(1rem,3vw,2rem)]">
+    <section
+      id="how-it-works"
+      className="mt-[1%] flex min-h-[80vh] w-full flex-col overflow-x-hidden bg-white p-[clamp(1rem,3vw,2rem)]"
+    >
       <h2 className="ml-[10%] w-[80%] pb-8 text-left font-goblin text-[clamp(2rem,5vw,3rem)] font-bold max-[480px]:ml-[5%] max-[480px]:w-[90%] max-md:ml-0 max-md:w-full max-md:text-center">
         How DripNSole Works
       </h2>

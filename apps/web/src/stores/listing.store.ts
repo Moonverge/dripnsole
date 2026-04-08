@@ -1,6 +1,22 @@
 import { create } from 'zustand'
-import type { Listing, ListingAvailability, ListingFilters, CreateListingPayload } from '@/types/listing'
-import { MOCK_LISTINGS } from '@/utils/mock-data'
+import type {
+  Listing,
+  ListingAvailability,
+  ListingFilters,
+  CreateListingPayload,
+} from '@/types/listing'
+import { axiosInstance } from '@/utils/axios.instance'
+import {
+  CREATE_LISTING,
+  GET_FEED,
+  GET_FOLLOWING_FEED,
+  GET_LISTING_BY_ID,
+  GET_LISTINGS,
+  GET_MY_LISTINGS,
+  PATCH_LISTING_AVAILABILITY,
+  SEARCH_LISTINGS,
+  UPLOAD_PHOTOS,
+} from '@/utils/api.routes'
 
 interface ListingState {
   listings: Listing[]
@@ -24,32 +40,8 @@ interface ListingActions {
   searchListings: (query: string) => Promise<void>
 }
 
-function applyFilters(listings: Listing[], filters: ListingFilters): Listing[] {
-  let result = [...listings]
-
-  if (filters.category) result = result.filter((l) => l.category === filters.category)
-  if (filters.subcategory) result = result.filter((l) => l.subcategory === filters.subcategory)
-  if (filters.condition) result = result.filter((l) => l.condition === filters.condition)
-  if (filters.priceMin) result = result.filter((l) => l.price >= filters.priceMin!)
-  if (filters.priceMax) result = result.filter((l) => l.price <= filters.priceMax!)
-  if (filters.query) {
-    const q = filters.query.toLowerCase()
-    result = result.filter(
-      (l) =>
-        l.title.toLowerCase().includes(q) ||
-        l.storeName.toLowerCase().includes(q) ||
-        l.description.toLowerCase().includes(q),
-    )
-  }
-
-  switch (filters.sort) {
-    case 'price_asc': result.sort((a, b) => a.price - b.price); break
-    case 'price_desc': result.sort((a, b) => b.price - a.price); break
-    case 'most_saved': result.sort((a, b) => b.saveCount - a.saveCount); break
-    default: result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-  }
-
-  return result
+function asListing(raw: unknown): Listing {
+  return raw as Listing
 }
 
 export const useListingStore = create<ListingState & ListingActions>()((set, get) => ({
@@ -63,81 +55,135 @@ export const useListingStore = create<ListingState & ListingActions>()((set, get
 
   fetchListings: async (filters?: ListingFilters) => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 500))
     const f = filters || get().filters
-    set({ listings: applyFilters(MOCK_LISTINGS, f), filters: f, isLoading: false })
+    const params = new URLSearchParams()
+    if (f.category) params.set('category', f.category)
+    if (f.subcategory) params.set('subcategory', f.subcategory)
+    if (f.condition) params.set('condition', f.condition)
+    if (f.priceMin != null) params.set('minPrice', String(f.priceMin))
+    if (f.priceMax != null) params.set('maxPrice', String(f.priceMax))
+    if (f.sizeClothes) params.set('size', f.sizeClothes)
+    if (f.sellerBadge) params.set('sellerBadge', f.sellerBadge)
+    if (f.sort) params.set('sort', f.sort)
+    const qs = params.toString()
+    const url = qs ? `${GET_LISTINGS()}?${qs}` : GET_LISTINGS()
+    try {
+      const { data } = await axiosInstance.get<{
+        success: boolean
+        data?: { listings: Listing[] }
+      }>(url)
+      set({
+        listings: data.data?.listings?.map(asListing) ?? [],
+        filters: f,
+        isLoading: false,
+      })
+    } catch {
+      set({ isLoading: false })
+    }
   },
 
   fetchMyListings: async () => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 500))
-    set({ myListings: MOCK_LISTINGS.filter((l) => l.storeId === 's1'), isLoading: false })
+    try {
+      const { data } = await axiosInstance.get<{
+        success: boolean
+        data?: { listings: Listing[] }
+      }>(GET_MY_LISTINGS())
+      set({ myListings: data.data?.listings?.map(asListing) ?? [], isLoading: false })
+    } catch {
+      set({ isLoading: false })
+    }
   },
 
   fetchFeed: async () => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 500))
-    const shuffled = [...MOCK_LISTINGS].sort(() => Math.random() - 0.5)
-    set({ feedListings: shuffled, isLoading: false })
+    try {
+      const { data } = await axiosInstance.get<{
+        success: boolean
+        data?: { listings: Listing[] }
+      }>(GET_FEED())
+      set({ feedListings: data.data?.listings?.map(asListing) ?? [], isLoading: false })
+    } catch {
+      set({ isLoading: false })
+    }
   },
 
   fetchFollowingFeed: async () => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 500))
-    set({ followingListings: MOCK_LISTINGS.filter((l) => l.storeId === 's2'), isLoading: false })
+    try {
+      const { data } = await axiosInstance.get<{
+        success: boolean
+        data?: { listings: Listing[] }
+      }>(GET_FOLLOWING_FEED())
+      set({ followingListings: data.data?.listings?.map(asListing) ?? [], isLoading: false })
+    } catch {
+      set({ isLoading: false })
+    }
   },
 
   fetchListingById: async (id: string) => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 300))
-    const found = MOCK_LISTINGS.find((l) => l.id === id) || null
-    set({ currentListing: found, isLoading: false })
+    try {
+      const { data } = await axiosInstance.get<{ success: boolean; data?: { listing: Listing } }>(
+        GET_LISTING_BY_ID(id),
+      )
+      set({
+        currentListing: data.data?.listing ? asListing(data.data.listing) : null,
+        isLoading: false,
+      })
+    } catch {
+      set({ currentListing: null, isLoading: false })
+    }
   },
 
   createListing: async (payload: CreateListingPayload) => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 1000))
-    const newListing: Listing = {
-      id: 'l-' + Date.now(),
-      storeId: 's1',
-      storeName: 'Thrift By Kath',
-      storeHandle: 'ThriftByKath',
-      title: payload.title,
-      category: payload.category,
-      subcategory: payload.subcategory,
-      condition: payload.condition,
-      size: payload.size,
-      sizeUnit: payload.sizeUnit,
-      measurements: payload.measurements,
-      price: payload.price,
-      negotiable: payload.negotiable,
-      shippingOptions: payload.shippingOptions,
-      description: payload.description,
-      photos: payload.photos.map((f, i) => ({
-        id: `p-${Date.now()}-${i}`,
-        url: URL.createObjectURL(f),
-        slot: 'front' as const,
-        order: i,
-      })),
-      availability: 'available',
-      viewCount: 0,
-      saveCount: 0,
-      commentCount: 0,
-      createdAt: new Date().toISOString(),
+    const fd = new FormData()
+    for (const file of payload.photos) {
+      fd.append('file', file)
     }
-    set((state) => ({
-      myListings: [newListing, ...state.myListings],
+    const up = await axiosInstance.post<{ success: boolean; data?: { photos: { id: string }[] } }>(
+      UPLOAD_PHOTOS(),
+      fd,
+    )
+    const photoIds = up.data.data?.photos?.map((p) => p.id) ?? []
+    if (photoIds.length === 0) {
+      set({ isLoading: false })
+      throw new Error('Upload failed')
+    }
+    const { data } = await axiosInstance.post<{ success: boolean; data?: { listing: Listing } }>(
+      CREATE_LISTING(),
+      {
+        title: payload.title,
+        category: payload.category,
+        subcategory: payload.subcategory,
+        condition: payload.condition,
+        size: payload.size,
+        sizeUnit: payload.sizeUnit,
+        measurements: payload.measurements,
+        price: payload.price,
+        negotiable: payload.negotiable,
+        shippingOptions: payload.shippingOptions,
+        description: payload.description,
+        photoIds,
+      },
+    )
+    const listing = data.data?.listing ? asListing(data.data.listing) : null
+    if (!listing) {
+      set({ isLoading: false })
+      throw new Error('Create failed')
+    }
+    set((s) => ({
+      myListings: [listing, ...s.myListings],
       isLoading: false,
     }))
-    return newListing
+    return listing
   },
 
   updateAvailability: async (id: string, availability: ListingAvailability) => {
-    await new Promise((r) => setTimeout(r, 300))
+    await axiosInstance.patch(PATCH_LISTING_AVAILABILITY(id), { availability })
     set((state) => ({
-      myListings: state.myListings.map((l) =>
-        l.id === id ? { ...l, availability } : l,
-      ),
+      myListings: state.myListings.map((l) => (l.id === id ? { ...l, availability } : l)),
     }))
   },
 
@@ -145,7 +191,15 @@ export const useListingStore = create<ListingState & ListingActions>()((set, get
 
   searchListings: async (query: string) => {
     set({ isLoading: true })
-    await new Promise((r) => setTimeout(r, 400))
-    set({ listings: applyFilters(MOCK_LISTINGS, { query }), isLoading: false })
+    const params = new URLSearchParams({ q: query })
+    try {
+      const { data } = await axiosInstance.get<{
+        success: boolean
+        data?: { listings: Listing[] }
+      }>(`${SEARCH_LISTINGS()}?${params.toString()}`)
+      set({ listings: data.data?.listings?.map(asListing) ?? [], isLoading: false })
+    } catch {
+      set({ isLoading: false })
+    }
   },
 }))

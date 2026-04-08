@@ -28,9 +28,7 @@ export const useNotificationStore = create<NotificationState & NotificationActio
     markAsRead: async (id: string) => {
       await new Promise((r) => setTimeout(r, 200))
       set((state) => ({
-        notifications: state.notifications.map((n) =>
-          n.id === id ? { ...n, read: true } : n,
-        ),
+        notifications: state.notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
       }))
     },
 

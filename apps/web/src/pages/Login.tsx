@@ -24,15 +24,21 @@ export default function Login() {
     <div className="flex min-h-screen items-center justify-center bg-white px-4">
       <div className="w-full max-w-md">
         <h1 className="mb-2 text-center font-goblin text-4xl font-bold">Welcome Back</h1>
-        <p className="mb-8 text-center font-martian text-sm text-text-muted">Sign in to DripNSole</p>
+        <p className="mb-8 text-center font-martian text-sm text-text-muted">
+          Sign in to DripNSole
+        </p>
 
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 font-martian text-sm text-accent-red">{error}</div>
+          <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 font-martian text-sm text-accent-red">
+            {error}
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">Email</label>
+            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">
+              Email
+            </label>
             <input
               type="email"
               value={email}
@@ -43,7 +49,9 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">Password</label>
+            <label className="mb-1.5 block font-martian text-xs font-medium text-text-secondary">
+              Password
+            </label>
             <input
               type="password"
               value={password}
@@ -64,7 +72,9 @@ export default function Login() {
 
         <p className="mt-6 text-center font-martian text-sm text-text-muted">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-medium text-brand no-underline hover:underline">Sign Up</Link>
+          <Link to="/signup" className="font-medium text-brand no-underline hover:underline">
+            Sign Up
+          </Link>
         </p>
       </div>
     </div>

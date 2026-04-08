@@ -188,6 +188,6 @@ Closes the loop from DripNSole to social discovery.
 
 ## See also
 
-- [LISTING_CREATION.md](../features/LISTING_CREATION.md) — full Drip creation, Spin view, validation  
-- [CROSS_POSTING.md](../features/CROSS_POSTING.md) — OAuth, captions, bulk, sold-state updates  
-- [BUYER_PURCHASE.md](./BUYER_PURCHASE.md) — how buyers find Dris and complete a purchase  
+- [LISTING_CREATION.md](../features/LISTING_CREATION.md) — full Drip creation, Spin view, validation
+- [CROSS_POSTING.md](../features/CROSS_POSTING.md) — OAuth, captions, bulk, sold-state updates
+- [BUYER_PURCHASE.md](./BUYER_PURCHASE.md) — how buyers find Dris and complete a purchase

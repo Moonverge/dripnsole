@@ -1,29 +1,12 @@
-export type ListingCondition =
-  | 'BNWT'
-  | 'BNWOT'
-  | 'VNDS'
-  | '9/10'
-  | '8/10'
-  | '7/10'
-  | 'Thrifted'
+export type ListingCondition = 'BNWT' | 'BNWOT' | 'VNDS' | '9/10' | '8/10' | '7/10' | 'Thrifted'
 
 export type ListingAvailability = 'available' | 'reserved' | 'sold'
 
 export type ListingCategory = 'Clothes' | 'Shoes'
 
-export type ClothesSubcategory =
-  | 'Tops'
-  | 'Bottoms'
-  | 'Dresses'
-  | 'Outerwear'
-  | 'Accessories'
+export type ClothesSubcategory = 'Tops' | 'Bottoms' | 'Dresses' | 'Outerwear' | 'Accessories'
 
-export type ShoesSubcategory =
-  | 'Sneakers'
-  | 'Heels'
-  | 'Flats'
-  | 'Boots'
-  | 'Sandals'
+export type ShoesSubcategory = 'Sneakers' | 'Heels' | 'Flats' | 'Boots' | 'Sandals'
 
 export type SizeClothes = 'XS' | 'S' | 'M' | 'L' | 'XL' | '2XL' | '3XL' | '4XL' | '5XL'
 

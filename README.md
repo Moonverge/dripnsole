@@ -20,36 +20,36 @@ DripNSole fixes all three.
 
 ## What's Built
 
-| Area | What |
-|---|---|
-| **Landing** | Hero with background overlay, product carousel, category/price grids, about section, how-it-works |
-| **Auth** | Login, signup with "want to sell?" prompt, JWT persistence, route protection |
-| **Store Setup** | 4-step wizard — handle picker with live URL preview, banner/bio/categories, FB/IG OAuth connect, confirmation |
-| **Listing Creation** | Guided 8-slot photo upload (front/back/left/right/sole/tag/defect/detail), spin viewer preview, full form with condition scale, measurements, PHP pricing |
-| **Spin Viewer** | Photo-based drag-to-rotate viewer — auto-plays in feed cards, manual spin on detail page |
-| **Cross-Posting** | Auto-generated caption with #thriftph hashtags, inline edit, FB/IG checkboxes, single + bulk mode |
-| **Seller Dashboard** | Stats overview, listings grid with availability toggle (Available/Reserved/Sold), bulk cross-post |
-| **Public Store Page** | Banner, badge tiers (New Seller → Verified Drip → Top Drip), follow button, filterable listings |
-| **Listing Detail** | Spin view / real photos toggle, measurements grid, offer flow, reserve button, public comments |
-| **Explore** | All listings with filter sidebar (category, condition, price range ₱) and sort |
-| **Search** | Full-text across listing titles, store names, descriptions |
-| **Wishlist** | Saved items with sold/reserved status |
-| **Following** | Feed of new drops from followed stores |
-| **Messaging** | Split-pane DM inbox scoped per listing, inline offer accept/counter/decline |
-| **Notifications** | Bell with unread count, grouped by type (offers, comments, DMs, follows) |
+| Area                  | What                                                                                                                                                      |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Landing**           | Hero with background overlay, product carousel, category/price grids, about section, how-it-works                                                         |
+| **Auth**              | Login, signup with "want to sell?" prompt, JWT persistence, route protection                                                                              |
+| **Store Setup**       | 4-step wizard — handle picker with live URL preview, banner/bio/categories, FB/IG OAuth connect, confirmation                                             |
+| **Listing Creation**  | Guided 8-slot photo upload (front/back/left/right/sole/tag/defect/detail), spin viewer preview, full form with condition scale, measurements, PHP pricing |
+| **Spin Viewer**       | Photo-based drag-to-rotate viewer — auto-plays in feed cards, manual spin on detail page                                                                  |
+| **Cross-Posting**     | Auto-generated caption with #thriftph hashtags, inline edit, FB/IG checkboxes, single + bulk mode                                                         |
+| **Seller Dashboard**  | Stats overview, listings grid with availability toggle (Available/Reserved/Sold), bulk cross-post                                                         |
+| **Public Store Page** | Banner, badge tiers (New Seller → Verified Drip → Top Drip), follow button, filterable listings                                                           |
+| **Listing Detail**    | Spin view / real photos toggle, measurements grid, offer flow, reserve button, public comments                                                            |
+| **Explore**           | All listings with filter sidebar (category, condition, price range ₱) and sort                                                                            |
+| **Search**            | Full-text across listing titles, store names, descriptions                                                                                                |
+| **Wishlist**          | Saved items with sold/reserved status                                                                                                                     |
+| **Following**         | Feed of new drops from followed stores                                                                                                                    |
+| **Messaging**         | Split-pane DM inbox scoped per listing, inline offer accept/counter/decline                                                                               |
+| **Notifications**     | Bell with unread count, grouped by type (offers, comments, DMs, follows)                                                                                  |
 
 ---
 
 ## Stack
 
-| Layer | Tech |
-|---|---|
-| Frontend | React 19, TypeScript, Tailwind v4, Vite 6 |
-| State | Zustand with persist middleware |
-| Routing | React Router v7 |
-| Backend | Fastify 4, TypeBox schemas |
+| Layer    | Tech                                                  |
+| -------- | ----------------------------------------------------- |
+| Frontend | React 19, TypeScript, Tailwind v4, Vite 6             |
+| State    | Zustand with persist middleware                       |
+| Routing  | React Router v7                                       |
+| Backend  | Fastify 4, TypeBox schemas                            |
 | Database | PostgreSQL (schema in `docs/tech/DATABASE_SCHEMA.md`) |
-| Monorepo | pnpm workspaces + Turborepo |
+| Monorepo | pnpm workspaces + Turborepo                           |
 
 ---
 
@@ -88,17 +88,17 @@ docs/
 
 ## Design System
 
-| Token | Value |
-|---|---|
-| **Heading font** | Goblin One |
-| **Body font** | Martian Mono |
-| **Brand** | `#2f4550` |
-| **Black** | `#000000` |
-| **Green accent** | `#10b981` |
-| **Red accent** | `#dc2626` |
-| **Surface** | `#f9f9f9` |
-| **Border** | `#e5e7eb` |
-| **Breakpoints** | 480px, 768px (mobile-first) |
+| Token            | Value                       |
+| ---------------- | --------------------------- |
+| **Heading font** | Goblin One                  |
+| **Body font**    | Martian Mono                |
+| **Brand**        | `#2f4550`                   |
+| **Black**        | `#000000`                   |
+| **Green accent** | `#10b981`                   |
+| **Red accent**   | `#dc2626`                   |
+| **Surface**      | `#f9f9f9`                   |
+| **Border**       | `#e5e7eb`                   |
+| **Breakpoints**  | 480px, 768px (mobile-first) |
 
 ---
 
@@ -147,17 +147,17 @@ pnpm test:e2e
 
 ## Terminology
 
-| Term | Meaning |
-|---|---|
-| **Drip** | A listing / item for sale |
-| **Sole** | A shoe listing |
-| **Spin view** | Photo-based 3D rotating item preview |
-| **Handle** | Seller's unique @username (`dripnsole.ph/@handle`) |
-| **BNWT** | Brand New With Tags |
-| **VNDS** | Very Near Deadstock |
-| **Ukay-ukay** | Filipino term for thrift shopping |
-| **Cross-post** | Auto-publishing a listing to FB/IG |
-| **Top Drip** | Highest seller badge tier |
+| Term           | Meaning                                            |
+| -------------- | -------------------------------------------------- |
+| **Drip**       | A listing / item for sale                          |
+| **Sole**       | A shoe listing                                     |
+| **Spin view**  | Photo-based 3D rotating item preview               |
+| **Handle**     | Seller's unique @username (`dripnsole.ph/@handle`) |
+| **BNWT**       | Brand New With Tags                                |
+| **VNDS**       | Very Near Deadstock                                |
+| **Ukay-ukay**  | Filipino term for thrift shopping                  |
+| **Cross-post** | Auto-publishing a listing to FB/IG                 |
+| **Top Drip**   | Highest seller badge tier                          |
 
 ---
 

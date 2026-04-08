@@ -26,27 +26,171 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-        <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/signup"
+          element={
+            <PublicRoute>
+              <Signup />
+            </PublicRoute>
+          }
+        />
 
-        <Route path="/" element={user ? <AppLayout><Home /></AppLayout> : <Home />} />
+        <Route
+          path="/"
+          element={
+            user ? (
+              <AppLayout>
+                <Home />
+              </AppLayout>
+            ) : (
+              <Home />
+            )
+          }
+        />
 
-        <Route path="/explore" element={<AppLayout><Explore /></AppLayout>} />
-        <Route path="/search" element={<AppLayout><Search /></AppLayout>} />
-        <Route path="/listing/:id" element={<AppLayout><ListingDetail /></AppLayout>} />
-        <Route path="/store/:handle" element={<AppLayout><StorePage /></AppLayout>} />
+        <Route
+          path="/explore"
+          element={
+            <AppLayout>
+              <Explore />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <AppLayout>
+              <Search />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/listing/:id"
+          element={
+            <AppLayout>
+              <ListingDetail />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/store/:handle"
+          element={
+            <AppLayout>
+              <StorePage />
+            </AppLayout>
+          }
+        />
 
-        <Route path="/wishlist" element={<PrivateRoute><AppLayout><Wishlist /></AppLayout></PrivateRoute>} />
-        <Route path="/following" element={<PrivateRoute><AppLayout><Following /></AppLayout></PrivateRoute>} />
-        <Route path="/messages" element={<PrivateRoute><AppLayout><Messages /></AppLayout></PrivateRoute>} />
+        <Route
+          path="/wishlist"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Wishlist />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/following"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Following />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/messages"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Messages />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="/store-setup" element={<PrivateRoute><AppLayout><StoreSetup /></AppLayout></PrivateRoute>} />
+        <Route
+          path="/store-setup"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <StoreSetup />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="/dashboard" element={<PrivateRoute><AppLayout><DashboardLayout><Dashboard /></DashboardLayout></AppLayout></PrivateRoute>} />
-        <Route path="/dashboard/listings" element={<PrivateRoute><AppLayout><DashboardLayout><Dashboard /></DashboardLayout></AppLayout></PrivateRoute>} />
-        <Route path="/dashboard/create" element={<PrivateRoute><AppLayout><DashboardLayout><CreateListing /></DashboardLayout></AppLayout></PrivateRoute>} />
-        <Route path="/dashboard/social" element={<PrivateRoute><AppLayout><DashboardLayout><Dashboard /></DashboardLayout></AppLayout></PrivateRoute>} />
-        <Route path="/dashboard/settings" element={<PrivateRoute><AppLayout><DashboardLayout><DashboardSettings /></DashboardLayout></AppLayout></PrivateRoute>} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <DashboardLayout>
+                  <Dashboard />
+                </DashboardLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/listings"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <DashboardLayout>
+                  <Dashboard />
+                </DashboardLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/create"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <DashboardLayout>
+                  <CreateListing />
+                </DashboardLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/social"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <DashboardLayout>
+                  <Dashboard />
+                </DashboardLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard/settings"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <DashboardLayout>
+                  <DashboardSettings />
+                </DashboardLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

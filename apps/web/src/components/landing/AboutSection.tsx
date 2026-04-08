@@ -15,7 +15,8 @@ export default function AboutSection() {
               Spotlighting Top Social Sellers
             </h2>
             <p className="font-martian text-[clamp(1rem,2vw,1.125rem)] leading-relaxed text-text-faint">
-              Meet the heroes of second-gear wheeling-dealing who are setting the pace in the world of used style.
+              Meet the heroes of second-gear wheeling-dealing who are setting the pace in the world
+              of used style.
             </p>
           </div>
         </div>

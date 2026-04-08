@@ -24,7 +24,9 @@ function AuthenticatedFeed() {
     <div className="mx-auto max-w-[1280px] px-4 py-6">
       <h1 className="mb-6 font-goblin text-2xl font-bold md:text-3xl">Drip Feed</h1>
       {isLoading ? (
-        <div className="flex min-h-[40vh] items-center justify-center font-martian text-sm text-text-muted">Loading your feed...</div>
+        <div className="flex min-h-[40vh] items-center justify-center font-martian text-sm text-text-muted">
+          Loading your feed...
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {feedListings.map((listing) => (

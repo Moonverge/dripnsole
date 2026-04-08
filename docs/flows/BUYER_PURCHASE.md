@@ -228,6 +228,6 @@ Trust layer for the next ukay buyer on the same store.
 
 ## See also
 
-- [LISTING_CREATION.md](../features/LISTING_CREATION.md) — how Dris are built, Spin view, negotiable toggle, couriers  
-- [CROSS_POSTING.md](../features/CROSS_POSTING.md) — social posts when item sells  
-- [SELLER_ONBOARDING.md](./SELLER_ONBOARDING.md) — how sellers set up shop and first Drip  
+- [LISTING_CREATION.md](../features/LISTING_CREATION.md) — how Dris are built, Spin view, negotiable toggle, couriers
+- [CROSS_POSTING.md](../features/CROSS_POSTING.md) — social posts when item sells
+- [SELLER_ONBOARDING.md](./SELLER_ONBOARDING.md) — how sellers set up shop and first Drip

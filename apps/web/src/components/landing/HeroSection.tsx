@@ -8,7 +8,8 @@ export default function HeroSection() {
         DripNSole
       </h1>
       <p className="mx-auto mb-8 max-w-xl text-center font-martian text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-text-secondary">
-        The thrift store for PH sneakers and clothes — with 3D item views and one-tap FB & IG posting.
+        The thrift store for PH sneakers and clothes — with 3D item views and one-tap FB & IG
+        posting.
       </p>
       <div className="flex flex-row-reverse flex-wrap justify-center gap-4 max-[480px]:w-full max-[480px]:max-w-[300px] max-[480px]:flex-col">
         <Link

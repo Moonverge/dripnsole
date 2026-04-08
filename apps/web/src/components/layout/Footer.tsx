@@ -10,41 +10,135 @@ export default function Footer() {
         <div>
           <p className="mb-2 font-bold">Shop</p>
           <ul className="m-0 list-none p-0">
-            <li className="mb-2"><Link to="/explore" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Explore</Link></li>
-            <li className="mb-2"><Link to="/explore?category=Shoes" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Shoes</Link></li>
-            <li className="mb-2"><Link to="/explore?category=Clothes" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Clothes</Link></li>
-            <li className="mb-2"><Link to="/explore?sort=most_saved" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Trending</Link></li>
+            <li className="mb-2">
+              <Link
+                to="/explore"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Explore
+              </Link>
+            </li>
+            <li className="mb-2">
+              <Link
+                to="/explore?category=Shoes"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Shoes
+              </Link>
+            </li>
+            <li className="mb-2">
+              <Link
+                to="/explore?category=Clothes"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Clothes
+              </Link>
+            </li>
+            <li className="mb-2">
+              <Link
+                to="/explore?sort=most_saved"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Trending
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <p className="mb-2 font-bold">Sell</p>
           <ul className="m-0 list-none p-0">
-            <li className="mb-2"><Link to="/signup" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Start Selling</Link></li>
-            <li className="mb-2"><a href="#how-it-works" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">How It Works</a></li>
-            <li className="mb-2"><Link to="/login" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Dashboard</Link></li>
+            <li className="mb-2">
+              <Link
+                to="/signup"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Start Selling
+              </Link>
+            </li>
+            <li className="mb-2">
+              <a
+                href="#how-it-works"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                How It Works
+              </a>
+            </li>
+            <li className="mb-2">
+              <Link
+                to="/login"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Dashboard
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <p className="mb-2 font-bold">Company</p>
           <ul className="m-0 list-none p-0">
-            <li className="mb-2"><a href="#" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">About</a></li>
-            <li className="mb-2"><a href="#" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Privacy Policy</a></li>
-            <li className="mb-2"><a href="#" className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy">Terms of Service</a></li>
+            <li className="mb-2">
+              <a
+                href="#"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                About
+              </a>
+            </li>
+            <li className="mb-2">
+              <a
+                href="#"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Privacy Policy
+              </a>
+            </li>
+            <li className="mb-2">
+              <a
+                href="#"
+                className="text-[#333] no-underline transition-colors duration-300 hover:text-accent-navy"
+              >
+                Terms of Service
+              </a>
+            </li>
           </ul>
         </div>
       </div>
       <div className="text-center">
         <div className="mb-4 flex justify-center gap-4 text-2xl">
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-[#333] transition-colors duration-300 hover:text-accent-blue">
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="text-[#333] transition-colors duration-300 hover:text-accent-blue"
+          >
             <Icon icon="mdi:facebook" width={24} height={24} />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-[#333] transition-colors duration-300 hover:text-accent-blue">
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="text-[#333] transition-colors duration-300 hover:text-accent-blue"
+          >
             <Icon icon="mdi:instagram" width={24} height={24} />
           </a>
-          <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="text-[#333] transition-colors duration-300 hover:text-accent-blue">
+          <a
+            href="https://tiktok.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            className="text-[#333] transition-colors duration-300 hover:text-accent-blue"
+          >
             <Icon icon="ic:baseline-tiktok" width={24} height={24} />
           </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="text-[#333] transition-colors duration-300 hover:text-accent-blue">
+          <a
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Twitter"
+            className="text-[#333] transition-colors duration-300 hover:text-accent-blue"
+          >
             <Icon icon="mdi:twitter" width={24} height={24} />
           </a>
         </div>

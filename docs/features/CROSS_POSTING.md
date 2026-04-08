@@ -143,6 +143,6 @@ Reduces ghosting and duplicate inquiries on old posts—common in busy ukay thre
 
 ## See also
 
-- [LISTING_CREATION.md](./LISTING_CREATION.md) — Drip fields, photos, Spin view, publish prompt  
-- [../flows/SELLER_ONBOARDING.md](../flows/SELLER_ONBOARDING.md) — optional FB/IG connect during store setup  
-- [../flows/BUYER_PURCHASE.md](../flows/BUYER_PURCHASE.md) — negotiable price and completing a sale  
+- [LISTING_CREATION.md](./LISTING_CREATION.md) — Drip fields, photos, Spin view, publish prompt
+- [../flows/SELLER_ONBOARDING.md](../flows/SELLER_ONBOARDING.md) — optional FB/IG connect during store setup
+- [../flows/BUYER_PURCHASE.md](../flows/BUYER_PURCHASE.md) — negotiable price and completing a sale

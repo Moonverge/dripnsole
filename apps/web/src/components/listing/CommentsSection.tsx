@@ -13,15 +13,29 @@ interface Comment {
 
 const MOCK_COMMENTS: Comment[] = [
   {
-    id: 'cm1', userId: 'u3', userName: 'Miguel Santos',
-    content: "What's the insole measurement on these?", createdAt: '2026-04-03T10:00:00Z',
+    id: 'cm1',
+    userId: 'u3',
+    userName: 'Miguel Santos',
+    content: "What's the insole measurement on these?",
+    createdAt: '2026-04-03T10:00:00Z',
     replies: [
-      { id: 'cm1r1', userId: 'u1', userName: 'ThriftByKath', content: "It's 28cm!", createdAt: '2026-04-03T10:05:00Z', replies: [] },
+      {
+        id: 'cm1r1',
+        userId: 'u1',
+        userName: 'ThriftByKath',
+        content: "It's 28cm!",
+        createdAt: '2026-04-03T10:05:00Z',
+        replies: [],
+      },
     ],
   },
   {
-    id: 'cm2', userId: 'u4', userName: 'Jessa Reyes',
-    content: 'These are so clean 🔥', createdAt: '2026-04-02T15:00:00Z', replies: [],
+    id: 'cm2',
+    userId: 'u4',
+    userName: 'Jessa Reyes',
+    content: 'These are so clean 🔥',
+    createdAt: '2026-04-02T15:00:00Z',
+    replies: [],
   },
 ]
 
@@ -35,8 +49,12 @@ export default function CommentsSection({ listingId: _listingId }: { listingId: 
   function handlePost() {
     if (!newComment.trim() || !user) return
     const comment: Comment = {
-      id: 'cm-' + Date.now(), userId: user.id, userName: user.name,
-      content: newComment, createdAt: new Date().toISOString(), replies: [],
+      id: 'cm-' + Date.now(),
+      userId: user.id,
+      userName: user.name,
+      content: newComment,
+      createdAt: new Date().toISOString(),
+      replies: [],
     }
     setComments([comment, ...comments])
     setNewComment('')
@@ -45,12 +63,16 @@ export default function CommentsSection({ listingId: _listingId }: { listingId: 
   function handleReply(parentId: string) {
     if (!replyText.trim() || !user) return
     const reply: Comment = {
-      id: 'cm-' + Date.now(), userId: user.id, userName: user.name,
-      content: replyText, createdAt: new Date().toISOString(), replies: [],
+      id: 'cm-' + Date.now(),
+      userId: user.id,
+      userName: user.name,
+      content: replyText,
+      createdAt: new Date().toISOString(),
+      replies: [],
     }
-    setComments(comments.map((c) =>
-      c.id === parentId ? { ...c, replies: [...c.replies, reply] } : c,
-    ))
+    setComments(
+      comments.map((c) => (c.id === parentId ? { ...c, replies: [...c.replies, reply] } : c)),
+    )
     setReplyingTo(null)
     setReplyText('')
   }
@@ -68,7 +90,10 @@ export default function CommentsSection({ listingId: _listingId }: { listingId: 
             placeholder="Add a comment..."
             className="flex-1 rounded-lg border border-border px-4 py-2.5 font-martian text-sm focus:border-brand focus:outline-none"
           />
-          <button onClick={handlePost} className="cursor-pointer rounded-full bg-black px-4 py-2.5 font-martian text-sm text-white transition-colors hover:bg-brand">
+          <button
+            onClick={handlePost}
+            className="cursor-pointer rounded-full bg-black px-4 py-2.5 font-martian text-sm text-white transition-colors hover:bg-brand"
+          >
             Post
           </button>
         </div>
@@ -80,10 +105,15 @@ export default function CommentsSection({ listingId: _listingId }: { listingId: 
             <div className="rounded-xl bg-surface-light p-4">
               <div className="mb-1 flex items-center gap-2">
                 <span className="font-martian text-xs font-bold">{comment.userName}</span>
-                <span className="font-martian text-[10px] text-text-muted">{new Date(comment.createdAt).toLocaleDateString()}</span>
+                <span className="font-martian text-[10px] text-text-muted">
+                  {new Date(comment.createdAt).toLocaleDateString()}
+                </span>
               </div>
               <p className="mb-2 font-martian text-sm">{comment.content}</p>
-              <button onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)} className="flex cursor-pointer items-center gap-1 border-none bg-none font-martian text-xs text-text-muted hover:text-black">
+              <button
+                onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                className="flex cursor-pointer items-center gap-1 border-none bg-none font-martian text-xs text-text-muted hover:text-black"
+              >
                 <Icon icon="mdi:reply" width={14} /> Reply
               </button>
             </div>
@@ -92,7 +122,9 @@ export default function CommentsSection({ listingId: _listingId }: { listingId: 
               <div key={reply.id} className="ml-8 mt-2 rounded-xl bg-surface-light/50 p-3">
                 <div className="mb-1 flex items-center gap-2">
                   <span className="font-martian text-xs font-bold">{reply.userName}</span>
-                  <span className="font-martian text-[10px] text-text-muted">{new Date(reply.createdAt).toLocaleDateString()}</span>
+                  <span className="font-martian text-[10px] text-text-muted">
+                    {new Date(reply.createdAt).toLocaleDateString()}
+                  </span>
                 </div>
                 <p className="font-martian text-sm">{reply.content}</p>
               </div>
@@ -108,7 +140,12 @@ export default function CommentsSection({ listingId: _listingId }: { listingId: 
                   className="flex-1 rounded-lg border border-border px-3 py-2 font-martian text-xs focus:border-brand focus:outline-none"
                   autoFocus
                 />
-                <button onClick={() => handleReply(comment.id)} className="cursor-pointer rounded-full bg-black px-3 py-2 font-martian text-xs text-white">Reply</button>
+                <button
+                  onClick={() => handleReply(comment.id)}
+                  className="cursor-pointer rounded-full bg-black px-3 py-2 font-martian text-xs text-white"
+                >
+                  Reply
+                </button>
               </div>
             )}
           </div>
