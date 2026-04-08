@@ -4,10 +4,16 @@ export default function HeroSection() {
   return (
     <div className="relative flex min-h-[30vh] flex-col items-center justify-center p-[clamp(1rem,3vw,2rem)] max-md:min-h-[70vh] max-md:justify-start max-md:pt-12">
       <div className="absolute inset-0 -z-1 bg-[url('/assets/main.jpg')] bg-cover bg-center opacity-40" />
-      <h1 className="text-center font-goblin text-[clamp(3.5rem,10vw,8rem)] font-bold uppercase max-md:mb-4 max-md:text-[clamp(2.5rem,8vw,3.5rem)]">
+      <h1
+        data-testid="home-title"
+        className="text-center font-goblin text-[clamp(3.5rem,10vw,8rem)] font-bold uppercase max-md:mb-4 max-md:text-[clamp(2.5rem,8vw,3.5rem)]"
+      >
         DripNSole
       </h1>
-      <p className="mx-auto mb-8 max-w-xl text-center font-martian text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-text-secondary">
+      <p
+        data-testid="home-blurb"
+        className="mx-auto mb-8 max-w-xl text-center font-martian text-[clamp(0.75rem,1.5vw,0.9rem)] leading-relaxed text-text-secondary"
+      >
         The thrift store for PH sneakers and clothes — with 3D item views and one-tap FB & IG
         posting.
       </p>
