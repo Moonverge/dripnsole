@@ -2,12 +2,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useAuthStore } from '@/stores/auth.store'
 import AppLayout from '@/components/layout/AppLayout'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import AdminLayout from '@/components/layout/AdminLayout'
 import PrivateRoute from '@/routes/PrivateRoute'
 import PublicRoute from '@/routes/PublicRoute'
 
 import Home from '@/pages/Home'
 import Login from '@/pages/Login'
 import Signup from '@/pages/Signup'
+import Suspended from '@/pages/Suspended'
 import StoreSetup from '@/pages/StoreSetup'
 import Explore from '@/pages/Explore'
 import Search from '@/pages/Search'
@@ -19,6 +21,13 @@ import StorePage from '@/pages/StorePage'
 import CreateListing from '@/pages/CreateListing'
 import Dashboard from '@/pages/Dashboard'
 import DashboardSettings from '@/pages/DashboardSettings'
+import Profile from '@/pages/Profile'
+import AdminOverview from '@/pages/admin/AdminOverview'
+import AdminUsers from '@/pages/admin/AdminUsers'
+import AdminListings from '@/pages/admin/AdminListings'
+import AdminStores from '@/pages/admin/AdminStores'
+import AdminReports from '@/pages/admin/AdminReports'
+import AdminSettings from '@/pages/admin/AdminSettings'
 
 export default function App() {
   const user = useAuthStore((s) => s.user)
@@ -42,6 +51,7 @@ export default function App() {
             </PublicRoute>
           }
         />
+        <Route path="/suspended" element={<Suspended />} />
 
         <Route
           path="/"
@@ -89,6 +99,16 @@ export default function App() {
           }
         />
 
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Profile />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/wishlist"
           element={
@@ -187,6 +207,79 @@ export default function App() {
                 <DashboardLayout>
                   <DashboardSettings />
                 </DashboardLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminLayout>
+                  <AdminOverview />
+                </AdminLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminLayout>
+                  <AdminUsers />
+                </AdminLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/listings"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminLayout>
+                  <AdminListings />
+                </AdminLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/stores"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminLayout>
+                  <AdminStores />
+                </AdminLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/reports"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminLayout>
+                  <AdminReports />
+                </AdminLayout>
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/settings"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminLayout>
+                  <AdminSettings />
+                </AdminLayout>
               </AppLayout>
             </PrivateRoute>
           }

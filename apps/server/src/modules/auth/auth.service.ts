@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import type { KeyLike } from 'jose'
 import type { Db } from '../../db/client.js'
 import type { RedisClient } from '../../redis/client.js'
-import { signAccessToken, denyAccessJti } from '../../lib/access-jwt.js'
+import { signAccessToken, denyAccessJti, type UserRole } from '../../lib/access-jwt.js'
 import { HttpError } from '../../lib/http-error.js'
 import { sanitizePlainText } from '../../lib/sanitize-text.js'
 import { hashRefreshToken, newRefreshTokenRaw } from '../../lib/refresh-token.js'
@@ -37,8 +37,8 @@ export function createAuthService(input: {
 }) {
   const { db, redis, jwtPrivate, repo } = input
 
-  async function issueSession(userId: string) {
-    const { token: accessToken } = await signAccessToken(jwtPrivate, userId)
+  async function issueSession(userId: string, role: UserRole) {
+    const { token: accessToken } = await signAccessToken(jwtPrivate, userId, role)
     const raw = newRefreshTokenRaw()
     const tokenHash = hashRefreshToken(raw)
     const familyId = repo.newFamilyId()
@@ -48,6 +48,8 @@ export function createAuthService(input: {
   }
 
   return {
+    issueSession,
+
     async register(
       body: RegisterBody,
       ctx: {
@@ -58,7 +60,7 @@ export function createAuthService(input: {
     ) {
       if (body.website?.trim()) {
         const fakeUserId = randomUUID()
-        const { token: accessToken } = await signAccessToken(jwtPrivate, fakeUserId)
+        const { token: accessToken } = await signAccessToken(jwtPrivate, fakeUserId, 'buyer')
         return {
           kind: 'honeypot' as const,
           accessToken,
@@ -66,7 +68,7 @@ export function createAuthService(input: {
             id: fakeUserId,
             email: body.email,
             name: sanitizePlainText(body.name),
-            isSeller: false,
+            role: 'buyer' as const,
             emailVerified: false,
             createdAt: new Date().toISOString(),
           },
@@ -102,7 +104,7 @@ export function createAuthService(input: {
 
         ctx.onVerificationTokenLogged(row.id, rawVerify)
 
-        const { accessToken, refreshRaw } = await issueSession(row.id)
+        const { accessToken, refreshRaw } = await issueSession(row.id, row.role)
         return {
           kind: 'ok' as const,
           accessToken,
@@ -111,7 +113,7 @@ export function createAuthService(input: {
             id: row.id,
             email: row.email,
             name: row.name,
-            isSeller: row.isSeller,
+            role: row.role,
             emailVerified: row.emailVerified,
             createdAt: row.createdAt.toISOString(),
           },
@@ -154,6 +156,10 @@ export function createAuthService(input: {
         return { kind: 'auth_failed' as const, message: invalidMsg }
       }
 
+      if (user.suspendedAt) {
+        return { kind: 'suspended' as const }
+      }
+
       const ok = await bcrypt.compare(body.password, user.passwordHash)
       if (!ok) {
         await recordFailedLogin(redis, ip, emailKey)
@@ -162,7 +168,7 @@ export function createAuthService(input: {
 
       await clearFailedLogin(redis, ip, emailKey)
 
-      const { accessToken, refreshRaw } = await issueSession(user.id)
+      const { accessToken, refreshRaw } = await issueSession(user.id, user.role)
       return {
         kind: 'ok' as const,
         accessToken,
@@ -171,7 +177,7 @@ export function createAuthService(input: {
           id: user.id,
           email: user.email,
           name: user.name,
-          isSeller: user.isSeller,
+          role: user.role,
           emailVerified: user.emailVerified,
           createdAt: user.createdAt.toISOString(),
         },
@@ -207,7 +213,11 @@ export function createAuthService(input: {
         })
       })
 
-      const { token: accessToken } = await signAccessToken(jwtPrivate, row.userId)
+      const userRows = await repo.findUserById(row.userId)
+      const user = userRows[0]
+      const role: UserRole = user?.role ?? 'buyer'
+
+      const { token: accessToken } = await signAccessToken(jwtPrivate, row.userId, role)
       return { kind: 'ok' as const, accessToken, refreshRaw: newRaw }
     },
 
@@ -254,7 +264,7 @@ export function createAuthService(input: {
             email: user.email,
             name: user.name,
             profilePic: user.profilePic,
-            isSeller: user.isSeller,
+            role: user.role,
             emailVerified: user.emailVerified,
             createdAt: user.createdAt.toISOString(),
           },

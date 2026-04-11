@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useListingStore } from '@/stores/listing.store'
 import PhotoUpload from '@/components/listing/PhotoUpload'
-import SpinViewer from '@/components/listing/SpinViewer'
+import PhotoViewer from '@/components/listing/PhotoViewer'
 import CrossPostModal from '@/components/listing/CrossPostModal'
 import type {
   PhotoSlot,
@@ -74,12 +74,12 @@ export default function CreateListing() {
   if (showPreview) {
     return (
       <div className="mx-auto max-w-lg px-4 py-6">
-        <h1 className="mb-4 font-goblin text-2xl font-bold">Spin Preview</h1>
+        <h1 className="mb-4 font-goblin text-2xl font-bold">Preview</h1>
         <p className="mb-4 font-martian text-sm text-text-muted">
-          This is how buyers will see your drip. Drag to spin.
+          This is how buyers will see your drip. Swipe through photos.
         </p>
         <div className="mb-6 flex justify-center">
-          <SpinViewer photos={previewUrls} size="lg" />
+          <PhotoViewer photos={previewUrls} size="lg" />
         </div>
         <div className="flex gap-3">
           <button
@@ -313,7 +313,7 @@ export default function CreateListing() {
           disabled={photos.size < 3 || !title || !price}
           className="w-full cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black disabled:opacity-40"
         >
-          Preview Spin & Publish
+          Preview & Publish
         </button>
       </div>
 

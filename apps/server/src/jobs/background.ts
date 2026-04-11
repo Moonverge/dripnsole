@@ -20,6 +20,27 @@ export async function sweepExpiredReservations(pool: Pool): Promise<void> {
   }
 }
 
+export async function recalculateBadgeTiers(pool: Pool): Promise<void> {
+  const client = await pool.connect()
+  try {
+    await client.query(`
+      UPDATE stores SET badge = 'top', updated_at = now()
+      WHERE completed_transactions >= 50
+        AND CAST(rating AS NUMERIC) >= 4.5
+        AND created_at <= now() - interval '90 days'
+        AND badge != 'top'
+    `)
+    await client.query(`
+      UPDATE stores SET badge = 'verified', updated_at = now()
+      WHERE completed_transactions >= 10
+        AND CAST(rating AS NUMERIC) >= 4.0
+        AND badge = 'new'
+    `)
+  } finally {
+    client.release()
+  }
+}
+
 export function startBackgroundJobs(input: { pool: Pool; redis: RedisClient | null }): () => void {
   const tickViews = () => {
     void flushViewsToDb(input.pool, input.redis)
@@ -38,9 +59,11 @@ export function startBackgroundJobs(input: { pool: Pool; redis: RedisClient | nu
   const v = setInterval(tickViews, 60_000)
   const r = setInterval(() => void sweepExpiredReservations(input.pool), 5 * 60_000)
   const o = setInterval(() => void tickOrphans(), 60 * 60_000)
+  const b = setInterval(() => void recalculateBadgeTiers(input.pool), 24 * 60 * 60_000)
   return () => {
     clearInterval(v)
     clearInterval(r)
     clearInterval(o)
+    clearInterval(b)
   }
 }

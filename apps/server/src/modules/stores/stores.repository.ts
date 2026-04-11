@@ -62,7 +62,7 @@ export function createStoresRepository(db: Db) {
       }
       await tx
         .update(users)
-        .set({ isSeller: true, updatedAt: new Date() })
+        .set({ role: 'seller' as const, updatedAt: new Date() })
         .where(eq(users.id, input.userId))
     },
 

@@ -23,6 +23,9 @@ import { offerRoutes } from './modules/offers/offers.router.js'
 import { reservationRoutes } from './modules/reservations/reservations.router.js'
 import { notificationRoutes } from './modules/notifications/notifications.router.js'
 import { reviewRoutes } from './modules/reviews/reviews.router.js'
+import { adminRoutes } from './modules/admin/admin.router.js'
+import { userRoutes } from './modules/users/users.router.js'
+import { reportRoutes } from './modules/reports/reports.router.js'
 
 export async function buildApp(input: {
   env: ServerEnv
@@ -124,6 +127,9 @@ export async function buildApp(input: {
       await f.register(reservationRoutes, { prefix: '/reservations' })
       await f.register(notificationRoutes, { prefix: '/notifications' })
       await f.register(reviewRoutes, { prefix: '/reviews' })
+      await f.register(adminRoutes, { prefix: '/admin' })
+      await f.register(userRoutes, { prefix: '/users' })
+      await f.register(reportRoutes, { prefix: '/reports' })
     },
     { prefix: '/api' },
   )

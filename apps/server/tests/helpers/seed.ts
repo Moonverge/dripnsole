@@ -106,7 +106,7 @@ export async function createPendingPhoto(db: Db, uploadedBy: string, order = 0) 
 }
 
 export async function markUserSeller(db: Db, userId: string) {
-  await db.update(users).set({ isSeller: true }).where(eq(users.id, userId))
+  await db.update(users).set({ role: 'seller' as const }).where(eq(users.id, userId))
 }
 
 export async function createOfferRecord(

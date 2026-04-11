@@ -5,8 +5,9 @@ import { useListingStore } from '@/stores/listing.store'
 import { useWishlistStore } from '@/stores/wishlist.store'
 import { useMessageStore } from '@/stores/message.store'
 import { useAuthStore } from '@/stores/auth.store'
-import SpinViewer from '@/components/listing/SpinViewer'
+import PhotoViewer from '@/components/listing/PhotoViewer'
 import CommentsSection from '@/components/listing/CommentsSection'
+import ReportModal from '@/components/common/ReportModal'
 
 export default function ListingDetail() {
   const { id } = useParams<{ id: string }>()
@@ -15,12 +16,13 @@ export default function ListingDetail() {
   const { createOffer } = useMessageStore()
   const user = useAuthStore((s) => s.user)
 
-  const [viewMode, setViewMode] = useState<'spin' | 'gallery'>('spin')
+  const [viewMode, setViewMode] = useState<'photos' | 'gallery'>('photos')
   const [showOffer, setShowOffer] = useState(false)
   const [offerAmount, setOfferAmount] = useState('')
   const [offerSent, setOfferSent] = useState(false)
   const [reserving, setReserving] = useState(false)
   const [reserved, setReserved] = useState(false)
+  const [showReport, setShowReport] = useState(false)
 
   useEffect(() => {
     if (id) fetchListingById(id)
@@ -55,8 +57,8 @@ export default function ListingDetail() {
     <div className="mx-auto max-w-5xl px-4 py-6">
       <div className="grid gap-8 md:grid-cols-2">
         <div>
-          {viewMode === 'spin' ? (
-            <SpinViewer photos={photos} autoPlay size="lg" />
+          {viewMode === 'photos' ? (
+            <PhotoViewer photos={photos} size="lg" />
           ) : (
             <div className="grid grid-cols-2 gap-2">
               {photos.map((url, i) => (
@@ -71,16 +73,16 @@ export default function ListingDetail() {
           )}
           <div className="mt-3 flex gap-2">
             <button
-              onClick={() => setViewMode('spin')}
-              className={`cursor-pointer rounded-full px-4 py-2 font-martian text-xs transition-colors ${viewMode === 'spin' ? 'bg-black text-white' : 'border border-border hover:bg-surface-light'}`}
+              onClick={() => setViewMode('photos')}
+              className={`cursor-pointer rounded-full px-4 py-2 font-martian text-xs transition-colors ${viewMode === 'photos' ? 'bg-black text-white' : 'border border-border hover:bg-surface-light'}`}
             >
-              Spin View
+              Photos
             </button>
             <button
               onClick={() => setViewMode('gallery')}
               className={`cursor-pointer rounded-full px-4 py-2 font-martian text-xs transition-colors ${viewMode === 'gallery' ? 'bg-black text-white' : 'border border-border hover:bg-surface-light'}`}
             >
-              Real Photos
+              Grid
             </button>
           </div>
         </div>
@@ -240,9 +242,17 @@ export default function ListingDetail() {
             </div>
           )}
 
-          <div className="mt-4 flex gap-4 font-martian text-xs text-text-muted">
+          <div className="mt-4 flex items-center gap-4 font-martian text-xs text-text-muted">
             <span>{listing.viewCount} views</span>
             <span>{listing.saveCount} saves</span>
+            {user && (
+              <button
+                onClick={() => setShowReport(true)}
+                className="ml-auto flex cursor-pointer items-center gap-1 border-none bg-none font-martian text-xs text-text-muted transition-colors hover:text-accent-red"
+              >
+                <Icon icon="mdi:flag-outline" width={14} /> Report
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -250,6 +260,14 @@ export default function ListingDetail() {
       <div className="mt-10 border-t border-border pt-8">
         <CommentsSection listingId={listing.id} />
       </div>
+
+      {showReport && (
+        <ReportModal
+          targetType="listing"
+          targetId={listing.id}
+          onClose={() => setShowReport(false)}
+        />
+      )}
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import type { FastifyPluginAsync } from 'fastify'
-import { requireAuth, requireEmailVerified } from '../../hooks/auth-pre.js'
+import { requireAuth, requireEmailVerified, requireSeller } from '../../hooks/auth-pre.js'
 import { createListingsRepository } from './listings.repository.js'
 import { createListingsService } from './listings.service.js'
 import { createListingsController } from './listings.controller.js'
@@ -16,7 +16,7 @@ export const listingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post(
     '/',
     {
-      preValidation: [requireAuth, requireEmailVerified],
+      preValidation: [requireAuth, requireEmailVerified, requireSeller],
       config: { rateLimit: { max: 30, timeWindow: '1 hour' } },
     },
     c.create,
@@ -31,12 +31,12 @@ export const listingRoutes: FastifyPluginAsync = async (fastify) => {
   )
 
   fastify.get('/feed', { preValidation: [requireAuth] }, c.feed)
-  fastify.get('/me', { preValidation: [requireAuth] }, c.myListings)
+  fastify.get('/me', { preValidation: [requireAuth, requireSeller] }, c.myListings)
   fastify.get('/following', { preValidation: [requireAuth] }, c.followingListings)
 
   fastify.get('/:id', { config: { public: true } }, c.getById)
-  fastify.put('/:id', { preValidation: [requireAuth] }, c.update)
-  fastify.delete('/:id', { preValidation: [requireAuth] }, c.deleteListing)
-  fastify.patch('/:id/availability', { preValidation: [requireAuth] }, c.setAvailability)
+  fastify.put('/:id', { preValidation: [requireAuth, requireSeller] }, c.update)
+  fastify.delete('/:id', { preValidation: [requireAuth, requireSeller] }, c.deleteListing)
+  fastify.patch('/:id/availability', { preValidation: [requireAuth, requireSeller] }, c.setAvailability)
   fastify.post('/:id/save', { preValidation: [requireAuth] }, c.toggleSave)
 }

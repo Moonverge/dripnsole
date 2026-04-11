@@ -27,7 +27,7 @@ export function createAuthRepository(db: Db) {
           id: users.id,
           email: users.email,
           name: users.name,
-          isSeller: users.isSeller,
+          role: users.role,
           emailVerified: users.emailVerified,
           createdAt: users.createdAt,
         })

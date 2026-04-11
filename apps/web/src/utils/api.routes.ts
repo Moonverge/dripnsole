@@ -55,4 +55,25 @@ export const DELETE_COMMENT = (id: string) => `/comments/${id}`
 export const GET_NOTIFICATIONS = () => `/notifications`
 export const MARK_NOTIFICATION_READ = (id: string) => `/notifications/${id}/read`
 
+export const UPDATE_PROFILE = () => `/users/me`
+export const CHANGE_PASSWORD = () => `/users/me/change-password`
+
+export const CREATE_REPORT = () => `/reports`
+
+export const ADMIN_OVERVIEW = () => `/admin/overview`
+export const ADMIN_USERS = () => `/admin/users`
+export const ADMIN_USER = (id: string) => `/admin/users/${id}`
+export const ADMIN_USER_ROLE = (id: string) => `/admin/users/${id}/role`
+export const ADMIN_USER_SUSPEND = (id: string) => `/admin/users/${id}/suspend`
+export const ADMIN_USER_UNSUSPEND = (id: string) => `/admin/users/${id}/unsuspend`
+export const ADMIN_LISTINGS = () => `/admin/listings`
+export const ADMIN_LISTING_DELETE = (id: string) => `/admin/listings/${id}`
+export const ADMIN_STORES = () => `/admin/stores`
+export const ADMIN_STORE_BADGE = (id: string) => `/admin/stores/${id}/badge`
+export const ADMIN_STORE_SUSPEND = (id: string) => `/admin/stores/${id}/suspend`
+export const ADMIN_REPORTS = () => `/admin/reports`
+export const ADMIN_REPORT_UPDATE = (id: string) => `/admin/reports/${id}`
+export const ADMIN_SETTINGS = () => `/admin/settings`
+export const ADMIN_SETTING_UPDATE = (key: string) => `/admin/settings/${key}`
+
 export { BASE_URL }

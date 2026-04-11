@@ -8,6 +8,8 @@ PostgreSQL schema for the DripNSole Filipino thrift e-commerce marketplace.
 - [ENUM types](#enum-types)
 - [Tables](#tables)
   - [users](#users)
+  - [reports](#reports)
+  - [platform_settings](#platform_settings)
   - [stores](#stores)
   - [store_categories](#store_categories)
   - [listings](#listings)
@@ -92,11 +94,19 @@ CREATE TYPE notification_type AS ENUM (
   'price_drop',
   'item_sold'
 );
+
+CREATE TYPE user_role AS ENUM ('buyer', 'seller', 'admin');
+
+CREATE TYPE report_status AS ENUM ('pending', 'resolved', 'dismissed');
+
+CREATE TYPE report_target AS ENUM ('listing', 'user');
 ```
 
 ## Tables
 
 ### users
+
+`is_seller` was replaced by **`role user_role`** (default `buyer`). **`suspended_at`** gates login and `requireAuth`.
 
 ```sql
 CREATE TABLE users (
@@ -105,12 +115,45 @@ CREATE TABLE users (
   password_hash text NOT NULL,
   name text NOT NULL,
   profile_pic text,
-  is_seller boolean NOT NULL DEFAULT false,
+  role user_role NOT NULL DEFAULT 'buyer',
+  email_verified boolean NOT NULL DEFAULT false,
+  email_verification_token_hash text,
+  email_verification_expires_at timestamptz,
+  suspended_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE INDEX idx_users_created_at ON users (created_at DESC);
+```
+
+Migration: `apps/server/drizzle/0001_roles.sql` (adds enums/columns/tables below; maps legacy `is_seller` → `seller` before drop).
+
+### reports
+
+```sql
+CREATE TABLE reports (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  reporter_id uuid NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+  target_type report_target NOT NULL,
+  target_id uuid NOT NULL,
+  reason text NOT NULL,
+  description text,
+  status report_status NOT NULL DEFAULT 'pending',
+  created_at timestamptz NOT NULL DEFAULT now()
+);
+```
+
+### platform_settings
+
+Key/value JSONB for operational toggles (e.g. maintenance, limits, featured list, commission).
+
+```sql
+CREATE TABLE platform_settings (
+  key text PRIMARY KEY,
+  value jsonb NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
 ```
 
 ### stores

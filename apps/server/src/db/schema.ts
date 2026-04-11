@@ -15,6 +15,10 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core'
 
+export const userRoleEnum = pgEnum('user_role', ['buyer', 'seller', 'admin'])
+export const reportStatusEnum = pgEnum('report_status', ['pending', 'resolved', 'dismissed'])
+export const reportTargetEnum = pgEnum('report_target', ['listing', 'user'])
+
 export const storeBadgeEnum = pgEnum('store_badge', ['new', 'verified', 'top'])
 export const storeCategoryEnum = pgEnum('store_category', [
   'Tops',
@@ -84,10 +88,11 @@ export const users = pgTable('users', {
   passwordHash: text('password_hash').notNull(),
   name: text('name').notNull(),
   profilePic: text('profile_pic'),
-  isSeller: boolean('is_seller').notNull().default(false),
+  role: userRoleEnum('role').notNull().default('buyer'),
   emailVerified: boolean('email_verified').notNull().default(false),
   emailVerificationTokenHash: text('email_verification_token_hash'),
   emailVerificationExpiresAt: timestamp('email_verification_expires_at', { withTimezone: true }),
+  suspendedAt: timestamp('suspended_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
@@ -346,3 +351,22 @@ export const socialConnections = pgTable(
     uqUserPlatform: unique('uq_social_connections_user_platform').on(t.userId, t.platform),
   }),
 )
+
+export const reports = pgTable('reports', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  reporterId: uuid('reporter_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  targetType: reportTargetEnum('target_type').notNull(),
+  targetId: uuid('target_id').notNull(),
+  reason: text('reason').notNull(),
+  description: text('description'),
+  status: reportStatusEnum('status').notNull().default('pending'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+})
+
+export const platformSettings = pgTable('platform_settings', {
+  key: text('key').primaryKey(),
+  value: jsonb('value').notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+})

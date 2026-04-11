@@ -1,17 +1,22 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation } from 'react-router-dom'
 import { Icon } from '@iconify/react'
+import { useAuthStore } from '@/stores/auth.store'
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'My Store', icon: 'mdi:store-outline' },
+  { to: '/dashboard', label: 'Overview', icon: 'mdi:view-dashboard-outline' },
   { to: '/dashboard/listings', label: 'My Listings', icon: 'mdi:view-grid-outline' },
-  { to: '/dashboard/create', label: 'New Listing', icon: 'mdi:plus-circle-outline' },
+  { to: '/dashboard/create', label: 'Create Listing', icon: 'mdi:plus-circle-outline' },
   { to: '/dashboard/social', label: 'Post to Social', icon: 'mdi:share-variant-outline' },
-  { to: '/messages', label: 'Messages', icon: 'mdi:message-outline' },
   { to: '/dashboard/settings', label: 'Settings', icon: 'mdi:cog-outline' },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
+  const user = useAuthStore((s) => s.user)
+
+  if (user && user.role !== 'seller' && user.role !== 'admin') {
+    return <Navigate to="/store-setup" replace />
+  }
 
   function isActive(path: string) {
     if (path === '/dashboard') return location.pathname === '/dashboard'

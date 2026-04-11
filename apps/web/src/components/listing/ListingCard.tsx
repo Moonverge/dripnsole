@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import type { Listing } from '@/types/listing'
 import { useWishlistStore } from '@/stores/wishlist.store'
-import SpinViewer from './SpinViewer'
+import PhotoViewer from './PhotoViewer'
 
 interface ListingCardProps {
   listing: Listing
@@ -24,7 +24,7 @@ export default function ListingCard({ listing, showStore = true }: ListingCardPr
     <div className="group relative">
       <Link to={`/listing/${listing.id}`} className="block no-underline text-black">
         <div className="relative">
-          <SpinViewer photos={photos} autoPlay size="sm" />
+          <PhotoViewer photos={photos} size="sm" />
           {availabilityBadge && (
             <span
               className={`absolute left-3 top-3 rounded-full px-3 py-1 font-martian text-[10px] font-bold ${availabilityBadge.className}`}

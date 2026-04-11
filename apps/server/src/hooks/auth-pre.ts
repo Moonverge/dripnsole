@@ -16,10 +16,41 @@ export const requireAuth: preHandlerHookHandler = async (request, reply) => {
       request.server.deps.redis,
     )
     request.userId = payload.sub
+    request.userRole = payload.role
     request.accessJti = payload.jti
   } catch {
     request.log.warn({ requestId: request.requestId }, 'invalid_access_token')
     return reply.status(401).send({ success: false, error: 'Unauthorized', code: 'AUTH' })
+  }
+
+  const db = request.server.deps.db
+  const row = await db
+    .select({ suspendedAt: users.suspendedAt })
+    .from(users)
+    .where(eq(users.id, request.userId))
+    .limit(1)
+  if (row[0]?.suspendedAt) {
+    return reply.status(403).send({
+      success: false,
+      error: 'Your account has been suspended. Contact support at support@dripnsole.ph',
+      code: 'ACCOUNT_SUSPENDED',
+    })
+  }
+}
+
+export const requireSeller: preHandlerHookHandler = async (request, reply) => {
+  if (request.userRole !== 'seller' && request.userRole !== 'admin') {
+    return reply
+      .status(403)
+      .send({ success: false, error: 'Seller access required', code: 'FORBIDDEN' })
+  }
+}
+
+export const requireAdmin: preHandlerHookHandler = async (request, reply) => {
+  if (request.userRole !== 'admin') {
+    return reply
+      .status(403)
+      .send({ success: false, error: 'Admin access required', code: 'FORBIDDEN' })
   }
 }
 

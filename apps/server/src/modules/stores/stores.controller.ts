@@ -1,5 +1,9 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import {
+  REFRESH_COOKIE,
+  REFRESH_TTL_MS,
+} from '../auth/auth.model.js'
+import {
   connectSocialBodySchema,
   createStoreBodySchema,
   updateStoreBodySchema,
@@ -8,6 +12,18 @@ import type { StoresService } from './stores.service.js'
 
 function badInput(reply: FastifyReply) {
   return reply.status(400).send({ success: false, error: 'Invalid input', code: 'VALIDATION' })
+}
+
+function setRefreshCookie(reply: FastifyReply, env: { NODE_ENV?: string }, raw: string) {
+  const secure = env.NODE_ENV === 'production'
+  const sameSite = secure ? ('strict' as const) : ('lax' as const)
+  reply.setCookie(REFRESH_COOKIE, raw, {
+    httpOnly: true,
+    secure,
+    sameSite,
+    path: '/',
+    maxAge: Math.floor(REFRESH_TTL_MS / 1000),
+  })
 }
 
 export function createStoresController(service: StoresService) {
@@ -38,7 +54,11 @@ export function createStoresController(service: StoresService) {
           .status(409)
           .send({ success: false, error: 'Store already exists', code: 'CONFLICT' })
       }
-      return reply.status(201).send({ success: true, data: { store: out.store } })
+      setRefreshCookie(reply, request.server.deps.env, out.refreshRaw)
+      return reply.status(201).send({
+        success: true,
+        data: { store: out.store, accessToken: out.accessToken },
+      })
     },
 
     async getByHandle(request: FastifyRequest, reply: FastifyReply) {

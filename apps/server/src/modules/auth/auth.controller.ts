@@ -66,6 +66,13 @@ export function createAuthController(service: AuthService) {
       if (out.kind === 'auth_failed') {
         return reply.status(401).send({ success: false, error: out.message, code: 'AUTH' })
       }
+      if (out.kind === 'suspended') {
+        return reply.status(403).send({
+          success: false,
+          error: 'Your account has been suspended. Contact support at support@dripnsole.ph',
+          code: 'ACCOUNT_SUSPENDED',
+        })
+      }
       setRefreshCookie(reply, request.server.deps.env, out.refreshRaw)
       return reply.send({
         success: true,

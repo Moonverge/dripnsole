@@ -61,7 +61,10 @@ export const useStoreStore = create<StoreState & StoreActions>()((set, get) => (
 
   createStore: async (payload: StoreSetupPayload) => {
     set({ isLoading: true })
-    await axiosInstance.post(CREATE_STORE(), {
+    const { data } = await axiosInstance.post<{
+      success: boolean
+      data?: { store: Record<string, unknown>; accessToken?: string }
+    }>(CREATE_STORE(), {
       handle: payload.handle,
       name: payload.name,
       bio: payload.bio,
@@ -69,6 +72,10 @@ export const useStoreStore = create<StoreState & StoreActions>()((set, get) => (
       pickupInfo: payload.pickupInfo,
       shippingInfo: payload.shippingInfo,
     })
+    if (data.data?.accessToken) {
+      const { useAuthStore } = await import('@/stores/auth.store')
+      useAuthStore.getState().upgradeToSeller(data.data.accessToken)
+    }
     await get().fetchMyStore()
     set({ isLoading: false })
   },

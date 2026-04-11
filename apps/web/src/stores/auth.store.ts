@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import type { User, LoginPayload, RegisterPayload } from '@/types/user'
+import type { User, UserRole, LoginPayload, RegisterPayload } from '@/types/user'
 import { axiosInstance } from '@/utils/axios.instance'
 import { AUTH_LOGOUT, AUTH_REFRESH, PROFILE, SIGN_IN, SIGN_UP } from '@/utils/api.routes'
 import { clearAccessToken, onSessionCleared, setAccessToken } from '@/utils/access-token'
@@ -15,18 +15,19 @@ interface AuthActions {
   register: (payload: RegisterPayload) => Promise<void>
   logout: () => Promise<void>
   setLoading: (loading: boolean) => void
-  becomeSeller: () => void
+  upgradeToSeller: (accessToken: string) => void
   refreshProfile: () => Promise<void>
   tryRefreshSession: () => Promise<void>
 }
 
 function mapUser(raw: Record<string, unknown>): User {
+  const role = (raw.role as UserRole) ?? (raw.isSeller ? 'seller' : 'buyer')
   return {
     id: String(raw.id),
     email: String(raw.email),
     name: String(raw.name),
     profilePic: raw.profilePic ? String(raw.profilePic) : undefined,
-    isSeller: Boolean(raw.isSeller),
+    role,
     emailVerified: raw.emailVerified !== undefined ? Boolean(raw.emailVerified) : undefined,
     createdAt: String(raw.createdAt),
   }
@@ -44,17 +45,25 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           const { data } = await axiosInstance.post<{
             success: boolean
             data?: { accessToken: string; user: User }
+            code?: string
+            error?: string
           }>(SIGN_IN(), payload)
           if (!data.success || !data.data) {
-            throw new Error('Login failed')
+            throw new Error(data.error || 'Login failed')
           }
           setAccessToken(data.data.accessToken)
           set({
             user: mapUser(data.data.user as unknown as Record<string, unknown>),
             isLoading: false,
           })
-        } catch (e) {
+        } catch (e: unknown) {
           set({ isLoading: false })
+          const axErr = e as { response?: { status?: number; data?: { code?: string; error?: string } } }
+          if (axErr.response?.status === 403 && axErr.response?.data?.code === 'ACCOUNT_SUSPENDED') {
+            const err = new Error(axErr.response.data.error || 'Account suspended')
+            ;(err as Error & { code: string }).code = 'ACCOUNT_SUSPENDED'
+            throw err
+          }
           throw e instanceof Error ? e : new Error('Login failed')
         }
       },
@@ -92,10 +101,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
-      becomeSeller: () => {
+      upgradeToSeller: (accessToken: string) => {
+        setAccessToken(accessToken)
         const { user } = get()
         if (user) {
-          set({ user: { ...user, isSeller: true } })
+          set({ user: { ...user, role: 'seller' } })
         }
       },
 
@@ -142,6 +152,22 @@ export const useAuthStore = create<AuthState & AuthActions>()(
     },
   ),
 )
+
+export function useIsBuyer() {
+  return useAuthStore((s) => s.user?.role === 'buyer')
+}
+
+export function useIsSeller() {
+  return useAuthStore((s) => s.user?.role === 'seller')
+}
+
+export function useIsAdmin() {
+  return useAuthStore((s) => s.user?.role === 'admin')
+}
+
+export function useIsAuthenticated() {
+  return useAuthStore((s) => s.user !== null)
+}
 
 onSessionCleared(() => {
   useAuthStore.setState({ user: null })

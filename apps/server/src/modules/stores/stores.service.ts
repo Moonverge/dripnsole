@@ -1,15 +1,22 @@
 import { randomUUID } from 'node:crypto'
 import type { ServerEnv } from '@dripnsole/config'
+import type { KeyLike } from 'jose'
 import type { Db } from '../../db/client.js'
 import { sanitizePlainText } from '../../lib/sanitize-text.js'
 import { isReservedHandle, normalizeHandle } from '../../lib/handle.js'
 import { conditionFromDb } from '../../lib/listing-condition.js'
 import { encryptSecret } from '../../lib/social-encrypt.js'
+import type { AuthService } from '../auth/auth.service.js'
 import type { StoresRepository } from './stores.repository.js'
 import type { ConnectSocialBody, CreateStoreBody, UpdateStoreBody } from './stores.model.js'
 
-export function createStoresService(input: { db: Db; repo: StoresRepository }) {
-  const { db, repo } = input
+export function createStoresService(input: {
+  db: Db
+  repo: StoresRepository
+  jwtPrivate: KeyLike
+  authService: AuthService
+}) {
+  const { db, repo, authService } = input
 
   return {
     checkHandleAvailability(raw: string) {
@@ -58,9 +65,14 @@ export function createStoresService(input: { db: Db; repo: StoresRepository }) {
           categories: body.categories,
         })
       })
+
+      const { accessToken, refreshRaw } = await authService.issueSession(userId, 'seller')
+
       return {
         kind: 'ok' as const,
         store: { id: storeId, handle, name: sanitizePlainText(body.name) },
+        accessToken,
+        refreshRaw,
       }
     },
 

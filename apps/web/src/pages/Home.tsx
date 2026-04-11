@@ -8,7 +8,6 @@ import LiveFeedStrip from '@/components/landing/LiveFeedStrip'
 import FreshDropsCarousel from '@/components/landing/FavoritesCarousel'
 import CategoriesSection from '@/components/landing/CategoriesSection'
 import PricePointsSection from '@/components/landing/PricePointsSection'
-import SocialProof from '@/components/landing/SocialProof'
 import AboutSection from '@/components/landing/AboutSection'
 import HowItWorks from '@/components/landing/HowItWorks'
 import ListingCard from '@/components/listing/ListingCard'
@@ -57,7 +56,6 @@ export default function Home() {
           <PricePointsSection />
         </div>
         <HowItWorks />
-        <SocialProof />
         <AboutSection />
       </main>
       <Footer />

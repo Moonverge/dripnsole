@@ -7,6 +7,9 @@ db\:down:
 db\:nuke:
 	docker compose down -v
 
+db\:migrate:
+	pnpm --filter @dripnsole/server db:migrate
+
 dev:
 	pnpm dev
 

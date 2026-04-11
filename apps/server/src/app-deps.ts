@@ -23,6 +23,7 @@ declare module 'fastify' {
   }
   interface FastifyRequest {
     userId?: string
+    userRole?: 'buyer' | 'seller' | 'admin'
     requestId?: string
     emailVerified?: boolean
     accessJti?: string

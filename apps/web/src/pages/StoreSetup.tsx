@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Icon } from '@iconify/react'
 import { useStoreStore } from '@/stores/store.store'
-import { useAuthStore } from '@/stores/auth.store'
 import type { StoreCategory } from '@/types/store'
 
 const ALL_CATEGORIES: StoreCategory[] = [
@@ -18,7 +17,6 @@ const ALL_CATEGORIES: StoreCategory[] = [
 export default function StoreSetup() {
   const navigate = useNavigate()
   const { createStore, checkHandleAvailability, connectSocial, isLoading } = useStoreStore()
-  const { becomeSeller } = useAuthStore()
   const [step, setStep] = useState(1)
 
   const [handle, setHandle] = useState('')
@@ -68,7 +66,6 @@ export default function StoreSetup() {
       pickupInfo,
       shippingInfo,
     })
-    becomeSeller()
     setStep(4)
   }
 
@@ -322,16 +319,16 @@ export default function StoreSetup() {
           </p>
           <div className="flex flex-col gap-3">
             <button
-              onClick={() => navigate('/dashboard/create')}
+              onClick={() => navigate('/dashboard')}
               className="w-full cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black"
             >
-              Create Your First Listing
+              Go to Dashboard
             </button>
             <button
-              onClick={() => navigate(`/store/${handle}`)}
+              onClick={() => navigate('/dashboard/create')}
               className="w-full cursor-pointer rounded-full border border-border bg-white py-3.5 font-martian text-sm font-medium transition-colors hover:bg-surface-light"
             >
-              View Your Store
+              Create Your First Listing
             </button>
           </div>
         </div>

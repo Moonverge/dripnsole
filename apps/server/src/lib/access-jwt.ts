@@ -4,14 +4,16 @@ import type { RedisClient } from '../redis/client.js'
 
 const ACCESS_TTL_SEC = 15 * 60
 
-export type AccessPayload = { sub: string; role: 'user'; jti: string }
+export type UserRole = 'buyer' | 'seller' | 'admin'
+export type AccessPayload = { sub: string; role: UserRole; jti: string }
 
 export async function signAccessToken(
   privateKey: KeyLike,
   userId: string,
+  role: UserRole,
 ): Promise<{ token: string; jti: string }> {
   const jti = randomUUID()
-  const token = await new SignJWT({ role: 'user' as const })
+  const token = await new SignJWT({ role })
     .setProtectedHeader({ alg: 'RS256' })
     .setSubject(userId)
     .setJti(jti)
@@ -29,6 +31,7 @@ export async function verifyAccessToken(
   const { payload } = await jwtVerify(token, publicKey, { algorithms: ['RS256'] })
   const sub = typeof payload.sub === 'string' ? payload.sub : ''
   const jti = typeof payload.jti === 'string' ? payload.jti : ''
+  const role = (payload.role as string) || 'buyer'
   if (!sub || !jti) {
     throw new Error('invalid_token')
   }
@@ -38,7 +41,7 @@ export async function verifyAccessToken(
       throw new Error('invalid_token')
     }
   }
-  return { sub, role: 'user', jti }
+  return { sub, role: role as UserRole, jti }
 }
 
 export async function denyAccessJti(

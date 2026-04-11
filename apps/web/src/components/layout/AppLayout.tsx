@@ -10,6 +10,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
+  const isSeller = user?.role === 'seller'
+  const isAdmin = user?.role === 'admin'
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault()
     if (searchQuery.trim()) {
@@ -28,11 +31,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Icon icon="heroicons:bars-3" width={24} height={24} />
           </button>
 
-          <Link to="/" className="shrink-0 no-underline text-black">
+          <Link to="/" className="flex shrink-0 items-center gap-2 no-underline text-black">
             <span className="font-martian text-lg font-bold md:text-xl">DripNSole</span>
+            {isAdmin && (
+              <span className="rounded bg-accent-red px-1.5 py-0.5 font-martian text-[10px] font-bold text-white">
+                Admin
+              </span>
+            )}
           </Link>
 
-          {user && (
+          {user && !isAdmin && (
             <div className="hidden gap-1 md:flex">
               <Link
                 to="/explore"
@@ -40,10 +48,18 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               >
                 SHOP
               </Link>
-              {user.isSeller && (
+              {isSeller ? (
                 <Link
                   to="/dashboard"
                   className="rounded px-3 py-2 font-martian text-sm font-medium no-underline text-black hover:bg-surface-light"
+                >
+                  DASHBOARD
+                </Link>
+              ) : (
+                <Link
+                  to="/store-setup"
+                  className="rounded px-3 py-2 font-martian text-sm font-medium no-underline text-brand hover:bg-surface-light"
+                  title="Start your store"
                 >
                   SELL
                 </Link>
@@ -71,14 +87,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
             {user ? (
               <>
-                <Link to="/wishlist" className="flex items-center p-2 text-black">
-                  <Icon icon="mynaui:heart" width={22} height={22} />
-                </Link>
-                <NotificationBell />
-                <Link to="/messages" className="flex items-center p-2 text-black">
-                  <Icon icon="mdi:message-outline" width={22} height={22} />
-                </Link>
-                <Link to="/dashboard" className="hidden items-center p-2 text-black md:flex">
+                {!isAdmin && (
+                  <>
+                    <Link to="/wishlist" className="flex items-center p-2 text-black">
+                      <Icon icon="mynaui:heart" width={22} height={22} />
+                    </Link>
+                    <NotificationBell />
+                    <Link to="/messages" className="flex items-center p-2 text-black">
+                      <Icon icon="mdi:message-outline" width={22} height={22} />
+                    </Link>
+                  </>
+                )}
+                <Link
+                  to={isAdmin ? '/admin' : '/profile'}
+                  className="hidden items-center p-2 text-black md:flex"
+                >
                   <Icon icon="clarity:user-line" width={22} height={22} />
                 </Link>
               </>
@@ -126,51 +149,69 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 <p className="mb-1 font-martian text-sm font-bold">{user.name}</p>
                 <p className="mb-4 font-martian text-xs text-text-muted">{user.email}</p>
                 <nav className="flex flex-col gap-1">
-                  <Link
-                    to="/explore"
-                    onClick={() => setSidebarOpen(false)}
-                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
-                  >
-                    Explore
-                  </Link>
-                  <Link
-                    to="/following"
-                    onClick={() => setSidebarOpen(false)}
-                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
-                  >
-                    Following
-                  </Link>
-                  <Link
-                    to="/wishlist"
-                    onClick={() => setSidebarOpen(false)}
-                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
-                  >
-                    Wishlist
-                  </Link>
-                  <Link
-                    to="/messages"
-                    onClick={() => setSidebarOpen(false)}
-                    className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
-                  >
-                    Messages
-                  </Link>
-                  {user.isSeller && (
+                  {isAdmin ? (
                     <Link
-                      to="/dashboard"
+                      to="/admin"
                       onClick={() => setSidebarOpen(false)}
                       className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
                     >
-                      Dashboard
+                      Admin Panel
                     </Link>
-                  )}
-                  {!user.isSeller && (
-                    <Link
-                      to="/store-setup"
-                      onClick={() => setSidebarOpen(false)}
-                      className="rounded px-3 py-2.5 font-martian text-sm text-brand no-underline hover:bg-surface-light"
-                    >
-                      Start Selling
-                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        to="/explore"
+                        onClick={() => setSidebarOpen(false)}
+                        className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                      >
+                        Explore
+                      </Link>
+                      <Link
+                        to="/profile"
+                        onClick={() => setSidebarOpen(false)}
+                        className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        to="/following"
+                        onClick={() => setSidebarOpen(false)}
+                        className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                      >
+                        Following
+                      </Link>
+                      <Link
+                        to="/wishlist"
+                        onClick={() => setSidebarOpen(false)}
+                        className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                      >
+                        Wishlist
+                      </Link>
+                      <Link
+                        to="/messages"
+                        onClick={() => setSidebarOpen(false)}
+                        className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                      >
+                        Messages
+                      </Link>
+                      {isSeller ? (
+                        <Link
+                          to="/dashboard"
+                          onClick={() => setSidebarOpen(false)}
+                          className="rounded px-3 py-2.5 font-martian text-sm text-text-link no-underline hover:bg-surface-light"
+                        >
+                          Dashboard
+                        </Link>
+                      ) : (
+                        <Link
+                          to="/store-setup"
+                          onClick={() => setSidebarOpen(false)}
+                          className="rounded px-3 py-2.5 font-martian text-sm text-brand no-underline hover:bg-surface-light"
+                        >
+                          Start Selling
+                        </Link>
+                      )}
+                    </>
                   )}
                   <div className="my-2 h-px bg-border" />
                   <button
