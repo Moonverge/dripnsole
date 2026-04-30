@@ -3,11 +3,7 @@ import {
   REFRESH_COOKIE,
   REFRESH_TTL_MS,
 } from '../auth/auth.model.js'
-import {
-  connectSocialBodySchema,
-  createStoreBodySchema,
-  updateStoreBodySchema,
-} from './stores.model.js'
+import { createStoreBodySchema, updateStoreBodySchema } from './stores.model.js'
 import type { StoresService } from './stores.service.js'
 
 function badInput(reply: FastifyReply) {
@@ -113,19 +109,5 @@ export function createStoresController(service: StoresService) {
       return reply.send({ success: true, data: { count: out.count } })
     },
 
-    async connectSocial(request: FastifyRequest, reply: FastifyReply) {
-      const parsed = connectSocialBodySchema.safeParse(request.body)
-      if (!parsed.success) return badInput(reply)
-      const out = await service.connectSocial(
-        request.userId!,
-        String((request.params as { handle: string }).handle),
-        parsed.data,
-        request.server.deps.env,
-      )
-      if (out.kind === 'forbidden') {
-        return reply.status(403).send({ success: false, error: 'Forbidden', code: 'FORBIDDEN' })
-      }
-      return reply.send({ success: true, data: { ok: true } })
-    },
   }
 }

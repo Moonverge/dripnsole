@@ -17,6 +17,8 @@ if (!url) {
 const migrations = [
   { name: '0000_init', file: '0000_init.sql' },
   { name: '0001_roles', file: '0001_roles.sql' },
+  { name: '0002_cross_posts', file: '0002_cross_posts.sql' },
+  { name: '0003_meta_oauth', file: '0003_meta_oauth.sql' },
 ]
 
 const client = new pg.Client({ connectionString: url })
@@ -30,10 +32,9 @@ try {
   `)
 
   for (const migration of migrations) {
-    const { rowCount } = await client.query(
-      `SELECT 1 FROM __migrations WHERE name = $1`,
-      [migration.name],
-    )
+    const { rowCount } = await client.query(`SELECT 1 FROM __migrations WHERE name = $1`, [
+      migration.name,
+    ])
 
     if (rowCount && rowCount > 0) {
       console.log(`Migration ${migration.name} already applied — skipping.`)
@@ -46,10 +47,7 @@ try {
     await client.query('BEGIN')
     try {
       await client.query(sql)
-      await client.query(
-        `INSERT INTO __migrations (name) VALUES ($1)`,
-        [migration.name],
-      )
+      await client.query(`INSERT INTO __migrations (name) VALUES ($1)`, [migration.name])
       await client.query('COMMIT')
       console.log(`Migration ${migration.name} applied.`)
     } catch (err) {

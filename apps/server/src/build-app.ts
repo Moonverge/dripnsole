@@ -1,4 +1,6 @@
 import Fastify from 'fastify'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
 import cookie from '@fastify/cookie'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
@@ -26,6 +28,8 @@ import { reviewRoutes } from './modules/reviews/reviews.router.js'
 import { adminRoutes } from './modules/admin/admin.router.js'
 import { userRoutes } from './modules/users/users.router.js'
 import { reportRoutes } from './modules/reports/reports.router.js'
+import { crossPostsRoutes } from './modules/cross-posts/cross-posts.router.js'
+import { devUploadDir } from './modules/upload/upload.service.js'
 
 export async function buildApp(input: {
   env: ServerEnv
@@ -112,6 +116,19 @@ export async function buildApp(input: {
     },
   } as import('fastify').FastifyRegisterOptions<unknown>)
 
+  fastify.get('/dev-upload/:key', { config: { public: true } }, async (request, reply) => {
+    const key = String((request.params as { key: string }).key)
+    if (!/^[a-f0-9-]+\.webp$/.test(key)) {
+      return reply.status(404).send({ success: false, error: 'Not found', code: 'NOT_FOUND' })
+    }
+    try {
+      const file = await readFile(path.join(devUploadDir, key))
+      return reply.header('content-type', 'image/webp').send(file)
+    } catch {
+      return reply.status(404).send({ success: false, error: 'Not found', code: 'NOT_FOUND' })
+    }
+  })
+
   fastify.addHook('preHandler', requireClientVersion)
 
   await fastify.register(
@@ -130,6 +147,7 @@ export async function buildApp(input: {
       await f.register(adminRoutes, { prefix: '/admin' })
       await f.register(userRoutes, { prefix: '/users' })
       await f.register(reportRoutes, { prefix: '/reports' })
+      await f.register(crossPostsRoutes, { prefix: '/cross-posts' })
     },
     { prefix: '/api' },
   )

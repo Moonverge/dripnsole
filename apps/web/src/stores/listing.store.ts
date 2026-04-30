@@ -26,6 +26,8 @@ interface ListingState {
   currentListing: Listing | null
   filters: ListingFilters
   isLoading: boolean
+  createStage: 'idle' | 'uploading_photos' | 'creating_listing' | 'done' | 'error'
+  createError: string | null
 }
 
 interface ListingActions {
@@ -44,6 +46,11 @@ function asListing(raw: unknown): Listing {
   return raw as Listing
 }
 
+function axiosError(e: unknown): string {
+  const ax = e as { response?: { data?: { error?: string } } }
+  return ax.response?.data?.error ?? (e instanceof Error ? e.message : 'Request failed')
+}
+
 export const useListingStore = create<ListingState & ListingActions>()((set, get) => ({
   listings: [],
   myListings: [],
@@ -52,6 +59,8 @@ export const useListingStore = create<ListingState & ListingActions>()((set, get
   currentListing: null,
   filters: {},
   isLoading: false,
+  createStage: 'idle',
+  createError: null,
 
   fetchListings: async (filters?: ListingFilters) => {
     set({ isLoading: true })
@@ -137,47 +146,53 @@ export const useListingStore = create<ListingState & ListingActions>()((set, get
   },
 
   createListing: async (payload: CreateListingPayload) => {
-    set({ isLoading: true })
-    const fd = new FormData()
-    for (const file of payload.photos) {
-      fd.append('file', file)
+    set({ isLoading: true, createStage: 'uploading_photos', createError: null })
+    try {
+      const fd = new FormData()
+      for (const file of payload.photos) {
+        fd.append('file', file)
+      }
+      const up = await axiosInstance.post<{
+        success: boolean
+        data?: { photos: { id: string }[] }
+      }>(UPLOAD_PHOTOS(), fd)
+      const photoIds = up.data.data?.photos?.map((p) => p.id) ?? []
+      if (photoIds.length === 0) {
+        throw new Error('Upload failed')
+      }
+      set({ createStage: 'creating_listing' })
+      const { data } = await axiosInstance.post<{ success: boolean; data?: { listing: Listing } }>(
+        CREATE_LISTING(),
+        {
+          title: payload.title,
+          category: payload.category,
+          subcategory: payload.subcategory,
+          condition: payload.condition,
+          size: payload.size,
+          sizeUnit: payload.sizeUnit,
+          measurements: payload.measurements,
+          price: payload.price,
+          negotiable: payload.negotiable,
+          shippingOptions: payload.shippingOptions,
+          description: payload.description,
+          photoIds,
+        },
+      )
+      const listing = data.data?.listing ? asListing(data.data.listing) : null
+      if (!listing) {
+        throw new Error('Create failed')
+      }
+      set((s) => ({
+        myListings: [listing, ...s.myListings],
+        isLoading: false,
+        createStage: 'done',
+      }))
+      return listing
+    } catch (e) {
+      const message = axiosError(e)
+      set({ isLoading: false, createStage: 'error', createError: message })
+      throw new Error(message)
     }
-    const up = await axiosInstance.post<{ success: boolean; data?: { photos: { id: string }[] } }>(
-      UPLOAD_PHOTOS(),
-      fd,
-    )
-    const photoIds = up.data.data?.photos?.map((p) => p.id) ?? []
-    if (photoIds.length === 0) {
-      set({ isLoading: false })
-      throw new Error('Upload failed')
-    }
-    const { data } = await axiosInstance.post<{ success: boolean; data?: { listing: Listing } }>(
-      CREATE_LISTING(),
-      {
-        title: payload.title,
-        category: payload.category,
-        subcategory: payload.subcategory,
-        condition: payload.condition,
-        size: payload.size,
-        sizeUnit: payload.sizeUnit,
-        measurements: payload.measurements,
-        price: payload.price,
-        negotiable: payload.negotiable,
-        shippingOptions: payload.shippingOptions,
-        description: payload.description,
-        photoIds,
-      },
-    )
-    const listing = data.data?.listing ? asListing(data.data.listing) : null
-    if (!listing) {
-      set({ isLoading: false })
-      throw new Error('Create failed')
-    }
-    set((s) => ({
-      myListings: [listing, ...s.myListings],
-      isLoading: false,
-    }))
-    return listing
   },
 
   updateAvailability: async (id: string, availability: ListingAvailability) => {

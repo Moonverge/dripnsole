@@ -11,9 +11,9 @@ export const conditionZ = z.enum(['BNWT', 'BNWOT', 'VNDS', '9/10', '8/10', '7/10
 export const createListingBodySchema = z.object({
   title: z.string().min(1).max(200),
   category: z.enum(['Clothes', 'Shoes']),
-  subcategory: z.string().min(1).max(80),
+  subcategory: z.string().max(80),
   condition: conditionZ,
-  size: z.string().min(1).max(40),
+  size: z.string().max(40),
   sizeUnit: z.enum(['EU', 'US', 'UK']).optional(),
   measurements: z.record(z.number()).optional(),
   price: z.number().int().min(0).max(9_999_999),

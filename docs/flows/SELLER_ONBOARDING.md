@@ -97,26 +97,32 @@ Buyers decide fast; ukay sellers often mix meetup **COD** with courier drop-offs
 
 ---
 
-## 5. Store setup — step 3: Connect Facebook / Instagram (optional, skippable)
+## 5. Store setup — step 3: Connect Facebook / Instagram via Make.com (optional, skippable)
 
 ### What it is
 
-Optional **OAuth** to connect **Facebook Page** and **Instagram Business** for cross-posting.
+Optional **Make.com integration** that lets the seller cross-post their listings to **Facebook Page** and **Instagram Business** later. DripNSole never touches Meta directly — Make is the connector and the seller authorizes their own social accounts inside Make.
 
 ### Why it exists
 
-Many sellers already move stock on IG; connecting now avoids friction at first publish.
+Many sellers already move stock on IG; setting this up during onboarding avoids friction at first publish. Going through Make means no Meta App Review wall and no token management on DripNSole's side.
 
 ### How it works
 
-1. Seller sees **Connect Facebook / Instagram** with benefits (one-tap cross-post).
-2. **Connect** → OAuth flow; on success, accounts are linked.
-3. **Skip for now** → store setup continues without social tokens.
+1. Seller sees **Connect Facebook & Instagram via Make.com** with a 60-second explainer video and the benefit copy ("post to FB + IG with one tap").
+2. **Connect** → opens the official **DripNSole Make template** in a new tab.
+3. Seller signs in to Make (Google, free), the template auto-loads, Make walks them through Meta's standard OAuth popups for Page + IG Business, and gives them a unique **webhook URL**.
+4. Seller pastes the webhook URL back into DripNSole.
+5. DripNSole fires a **test payload**; if Make accepts (200), both platforms flip to **Connected ✓**.
+6. **Skip for now** → store setup continues; the seller can connect later from **Settings → Connections** or the first time they hit "Post to FB/IG".
 
 ### Edge cases
 
-- **OAuth failure:** show error; allow skip and retry from settings later.
-- **Token expiry later:** covered in [CROSS_POSTING.md](../features/CROSS_POSTING.md).
+- **Seller closes the Make tab without finishing:** the connection state stays "Not connected"; they can retry anytime from Settings.
+- **Test payload fails:** show the Make-side error (e.g. "Scenario inactive — toggle it on") and a "Re-test" button.
+- **IG isn't a Business account or isn't linked to the FB Page:** Meta will reject inside Make. We surface a help link explaining the one-time fix in the IG app.
+- **Meta token expires (~60 days):** Make emails the seller. Next failed cross-post on DripNSole shows a banner: "Reconnect your scenario in Make".
+- Full behavior is documented in [CROSS_POSTING.md](../features/CROSS_POSTING.md).
 
 ---
 
@@ -164,30 +170,36 @@ First success determines if the seller returns; aligns with **ukay** norms (hone
 
 ---
 
-## 8. First cross-post
+## 8. First cross-post (opt-in)
 
 ### What it is
 
-After first publish, prompt to **cross-post** to Facebook/Instagram with auto-caption (item + ₱ + size + condition + link + hashtags).
+After first publish, the success screen **offers** the seller a chance to cross-post to Facebook and/or Instagram. **Nothing posts automatically** — the seller chooses whether and where to post.
 
 ### Why it exists
 
-Closes the loop from DripNSole to social discovery.
+Closes the loop from DripNSole to social discovery without surprising the seller. Manual choice respects sellers who only want a branded storefront and don't want every drop blasted to their feed.
 
 ### How it works
 
-1. If FB/IG connected: open cross-post composer; seller edits caption or lead photo if needed, then posts.
-2. If not connected: prompt to **Connect** or **Skip**.
-3. Single post completes first cross-post milestone.
+1. After publish, show:
+   ```
+   ✓ Listing published
+   [ Post to Facebook & Instagram ]   [ Maybe later ]
+   ```
+2. **Post** → opens the Cross-Post Composer with platforms (FB / IG / both) toggleable and the auto-generated caption editable for this specific item.
+3. **Maybe later** → returns to the dashboard with a toast pointing to the **Listings tab**, where the seller can post (or repost) anytime, single or in bulk up to 20 items.
+4. **Not yet connected to Make** → the post button instead opens the Connections modal first; once connected, returns to the composer.
 
 ### Edge cases
 
-- **Bulk later:** up to 20 listings per batch; IG carousel up to 10 photos — see [CROSS_POSTING.md](../features/CROSS_POSTING.md).
+- **Seller skips and never posts:** that's fine — the listing still lives at `dripnsole.ph/@handle/listing/...` and is discoverable on-platform.
+- **Bulk and repost flows, per-item caption editing, SOLD-state behavior, rate limits:** all defined in [CROSS_POSTING.md](../features/CROSS_POSTING.md).
 
 ---
 
 ## See also
 
 - [LISTING_CREATION.md](../features/LISTING_CREATION.md) — full Drip creation, Spin view, validation
-- [CROSS_POSTING.md](../features/CROSS_POSTING.md) — OAuth, captions, bulk, sold-state updates
+- [CROSS_POSTING.md](../features/CROSS_POSTING.md) — Make.com setup, per-item captions, single + bulk + repost flows, sold-state updates
 - [BUYER_PURCHASE.md](./BUYER_PURCHASE.md) — how buyers find Dris and complete a purchase

@@ -260,22 +260,4 @@ describe('stores module', () => {
     expect(end).toBe(mid - 1)
   })
 
-  it('POST /api/stores/:handle/connect-social — response body omits plaintext token', async () => {
-    const { app } = await integrationContext()
-    const db = app.deps.db
-    const { token, storeId } = await loginVerifiedSeller(app, db)
-    const [row] = await db.select().from(stores).where(eq(stores.id, storeId)).limit(1)
-    const secret = 'plain-fb-token-xyz'
-    const res = await app.inject({
-      method: 'POST',
-      url: `/api/stores/${row!.handle}/connect-social`,
-      headers: protectedHeaders(token),
-      payload: {
-        platform: 'facebook',
-        accessToken: secret,
-      },
-    })
-    expect(res.statusCode).toBe(200)
-    expect(res.body.includes(secret)).toBe(false)
-  })
 })

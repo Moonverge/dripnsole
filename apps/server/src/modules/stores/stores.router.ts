@@ -38,9 +38,4 @@ export const storeRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.put('/:handle', { preValidation: [requireAuth, requireSeller] }, c.updateByHandle)
   fastify.post('/:handle/follow', { preValidation: [requireAuth] }, c.toggleFollow)
   fastify.get('/:handle/followers', { config: { public: true } }, c.followerCount)
-  fastify.post(
-    '/:handle/connect-social',
-    { preValidation: [requireAuth, requireSeller] },
-    c.connectSocial,
-  )
 }

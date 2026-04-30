@@ -21,8 +21,17 @@ const serverEnvSchema = z
     JWT_ACCESS_PRIVATE_KEY_PEM: z.string().min(1).optional(),
     JWT_ACCESS_PUBLIC_KEY_PEM: z.string().min(1).optional(),
     JWT_REFRESH_SECRET: z.string().min(1).optional(),
+    META_APP_ID: z.string().optional(),
+    META_APP_SECRET: z.string().optional(),
+    META_REDIRECT_URI: z.string().url().optional(),
+    META_GRAPH_VERSION: z
+      .string()
+      .regex(/^v\d+\.\d+$/)
+      .optional(),
     FB_APP_ID: z.string().optional(),
     FB_APP_SECRET: z.string().optional(),
+    FACEBOOK_REDIRECT_URI: z.string().url().optional(),
+    FACEBOOK_LOGIN_CONFIG_ID: z.string().optional(),
     IG_APP_ID: z.string().optional(),
     IG_APP_SECRET: z.string().optional(),
     CLOUDFLARE_R2_BUCKET: z.string().optional(),
@@ -63,7 +72,13 @@ const serverEnvSchema = z
     }
   })
 
-export type ServerEnv = z.output<typeof serverEnvSchema> & { FRONTEND_URL: string }
+export type ServerEnv = z.output<typeof serverEnvSchema> & {
+  FRONTEND_URL: string
+  META_APP_ID?: string
+  META_APP_SECRET?: string
+  META_REDIRECT_URI: string
+  META_GRAPH_VERSION: string
+}
 
 function formatEnvIssues(error: z.ZodError): string {
   return error.issues
@@ -81,8 +96,16 @@ export function parseServerEnv(env: NodeJS.ProcessEnv = process.env): ServerEnv 
   }
   const d = result.data
   const primaryOrigin = d.ALLOWED_ORIGINS[0]
+  const metaRedirect =
+    d.META_REDIRECT_URI ??
+    d.FACEBOOK_REDIRECT_URI ??
+    `http://localhost:${d.PORT}/api/cross-posts/meta/callback`
   return {
     ...d,
+    META_APP_ID: d.META_APP_ID ?? d.FB_APP_ID,
+    META_APP_SECRET: d.META_APP_SECRET ?? d.FB_APP_SECRET,
+    META_REDIRECT_URI: metaRedirect,
+    META_GRAPH_VERSION: d.META_GRAPH_VERSION ?? 'v25.0',
     FRONTEND_URL: d.FRONTEND_URL ?? primaryOrigin ?? 'http://localhost:3000',
   }
 }

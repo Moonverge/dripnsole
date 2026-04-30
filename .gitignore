@@ -9,4 +9,5 @@ coverage
 playwright-report
 test-results
 *.tsbuildinfo
+.dev-uploads
 .cursor

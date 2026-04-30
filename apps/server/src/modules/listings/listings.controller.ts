@@ -7,8 +7,25 @@ import {
 } from './listings.model.js'
 import type { ListingsService } from './listings.service.js'
 
-function badRequest(reply: FastifyReply) {
-  return reply.status(400).send({ success: false, error: 'Invalid input', code: 'VALIDATION' })
+function validationMessage(errors: { path: (string | number)[]; message: string }[]) {
+  return errors
+    .map((e) => {
+      const field = e.path.join('.')
+      return field ? `${field}: ${e.message}` : e.message
+    })
+    .join('; ')
+}
+
+function badRequest(
+  reply: FastifyReply,
+  errors?: { path: (string | number)[]; message: string }[],
+) {
+  return reply.status(400).send({
+    success: false,
+    error: errors?.length ? validationMessage(errors) : 'Invalid input',
+    code: 'VALIDATION',
+    details: errors,
+  })
 }
 
 function parseListQuery(request: FastifyRequest): ListingListQuery {
@@ -32,7 +49,7 @@ export function createListingsController(service: ListingsService) {
   return {
     async create(request: FastifyRequest, reply: FastifyReply) {
       const parsed = createListingBodySchema.safeParse(request.body)
-      if (!parsed.success) return badRequest(reply)
+      if (!parsed.success) return badRequest(reply, parsed.error.issues)
       const out = await service.create(request.userId!, parsed.data)
       if (out.kind === 'honeypot') {
         return reply.send({
@@ -109,7 +126,7 @@ export function createListingsController(service: ListingsService) {
 
     async update(request: FastifyRequest, reply: FastifyReply) {
       const parsed = updateListingBodySchema.safeParse(request.body)
-      if (!parsed.success) return badRequest(reply)
+      if (!parsed.success) return badRequest(reply, parsed.error.issues)
       const out = await service.update(
         request.userId!,
         String((request.params as { id: string }).id),
@@ -146,7 +163,7 @@ export function createListingsController(service: ListingsService) {
 
     async setAvailability(request: FastifyRequest, reply: FastifyReply) {
       const body = availabilityBodySchema.safeParse(request.body)
-      if (!body.success) return badRequest(reply)
+      if (!body.success) return badRequest(reply, body.error.issues)
       const out = await service.setAvailability(
         request.userId!,
         String((request.params as { id: string }).id),

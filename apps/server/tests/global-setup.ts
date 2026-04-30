@@ -9,9 +9,9 @@ const serverRoot = path.resolve(__dirname, '..')
 
 let container: Awaited<ReturnType<PostgreSqlContainer['start']>> | null = null
 
+const migrations = ['0000_init.sql', '0001_roles.sql', '0002_cross_posts.sql', '0003_meta_oauth.sql']
+
 async function applySchema(url: string, resetSchema: boolean) {
-  const sqlPath = path.join(serverRoot, 'drizzle/0000_init.sql')
-  const sql = readFileSync(sqlPath, 'utf8')
   const client = new pg.Client({ connectionString: url })
   await client.connect()
   try {
@@ -19,7 +19,10 @@ async function applySchema(url: string, resetSchema: boolean) {
       await client.query('DROP SCHEMA IF EXISTS public CASCADE')
       await client.query('CREATE SCHEMA public')
     }
-    await client.query(sql)
+    for (const migration of migrations) {
+      const sqlPath = path.join(serverRoot, 'drizzle', migration)
+      await client.query(readFileSync(sqlPath, 'utf8'))
+    }
   } finally {
     await client.end()
   }

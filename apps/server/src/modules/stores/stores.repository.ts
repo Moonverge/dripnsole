@@ -1,14 +1,6 @@
 import { and, desc, eq, inArray, isNull, sql } from 'drizzle-orm'
 import { randomUUID } from 'node:crypto'
-import {
-  follows,
-  listingPhotos,
-  listings,
-  socialConnections,
-  storeCategories,
-  stores,
-  users,
-} from '../../db/schema.js'
+import { follows, listingPhotos, listings, storeCategories, stores, users } from '../../db/schema.js'
 import type { Db } from '../../db/client.js'
 import type { DbTx } from '../../db/tx.js'
 import type { StoreCategory } from './stores.model.js'
@@ -143,33 +135,6 @@ export function createStoresRepository(db: Db) {
         }
       })
       return following
-    },
-
-    upsertSocialConnection(input: {
-      userId: string
-      platform: 'facebook' | 'instagram'
-      accessTokenEnc: string
-      refreshTokenEnc: string | null
-      accountName: string | null
-    }) {
-      return db
-        .insert(socialConnections)
-        .values({
-          userId: input.userId,
-          platform: input.platform,
-          accessTokenEnc: input.accessTokenEnc,
-          refreshTokenEnc: input.refreshTokenEnc,
-          accountName: input.accountName,
-        })
-        .onConflictDoUpdate({
-          target: [socialConnections.userId, socialConnections.platform],
-          set: {
-            accessTokenEnc: input.accessTokenEnc,
-            refreshTokenEnc: input.refreshTokenEnc,
-            accountName: input.accountName,
-            connectedAt: new Date(),
-          },
-        })
     },
 
     newStoreId() {

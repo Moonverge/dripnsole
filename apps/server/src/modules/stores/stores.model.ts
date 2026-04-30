@@ -28,14 +28,6 @@ export const updateStoreBodySchema = z.object({
   bannerUrl: z.string().url().max(2000).optional(),
 })
 
-export const connectSocialBodySchema = z.object({
-  platform: z.enum(['facebook', 'instagram']),
-  accessToken: z.string().min(1).max(8000),
-  refreshToken: z.string().max(8000).optional(),
-  accountName: z.string().max(200).optional(),
-})
-
 export type CreateStoreBody = z.infer<typeof createStoreBodySchema>
 export type UpdateStoreBody = z.infer<typeof updateStoreBodySchema>
-export type ConnectSocialBody = z.infer<typeof connectSocialBodySchema>
 export type StoreCategory = z.infer<typeof storeCategoryZ>

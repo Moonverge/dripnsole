@@ -37,6 +37,10 @@ export const listingRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get('/:id', { config: { public: true } }, c.getById)
   fastify.put('/:id', { preValidation: [requireAuth, requireSeller] }, c.update)
   fastify.delete('/:id', { preValidation: [requireAuth, requireSeller] }, c.deleteListing)
-  fastify.patch('/:id/availability', { preValidation: [requireAuth, requireSeller] }, c.setAvailability)
+  fastify.patch(
+    '/:id/availability',
+    { preValidation: [requireAuth, requireSeller] },
+    c.setAvailability,
+  )
   fastify.post('/:id/save', { preValidation: [requireAuth] }, c.toggleSave)
 }

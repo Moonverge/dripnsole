@@ -1,6 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Icon } from '@iconify/react'
 import { useListingStore } from '@/stores/listing.store'
+import { useStoreStore } from '@/stores/store.store'
+import { useCrossPostStore } from '@/stores/cross-post.store'
 import PhotoUpload from '@/components/listing/PhotoUpload'
 import PhotoViewer from '@/components/listing/PhotoViewer'
 import CrossPostModal from '@/components/listing/CrossPostModal'
@@ -26,12 +29,20 @@ const SHIPPING_OPTIONS = ['J&T Express', 'LBC', 'Lalamove', 'Meetup / COD']
 
 export default function CreateListing() {
   const navigate = useNavigate()
-  const { createListing, isLoading } = useListingStore()
+  const { createListing, isLoading, createStage, createError } = useListingStore()
+  const { myStore, fetchMyStore } = useStoreStore()
+  const { meta, fetchMeta } = useCrossPostStore()
   const [photos, setPhotos] = useState<Map<PhotoSlot, File>>(new Map())
   const [showPreview, setShowPreview] = useState(false)
   const [showCrossPost, setShowCrossPost] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [createdListing, setCreatedListing] =
     useState<ReturnType<typeof useListingStore.getState>['currentListing']>(null)
+
+  useEffect(() => {
+    fetchMyStore()
+    fetchMeta()
+  }, [fetchMyStore, fetchMeta])
 
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState<ListingCategory>('Clothes')
@@ -44,6 +55,7 @@ export default function CreateListing() {
   const [negotiable, setNegotiable] = useState(false)
   const [shipping, setShipping] = useState<string[]>([])
   const [description, setDescription] = useState('')
+  const [publishError, setPublishError] = useState<string | null>(null)
 
   const photoFiles = Array.from(photos.values())
   const previewUrls = photoFiles.map((f) => URL.createObjectURL(f))
@@ -53,22 +65,91 @@ export default function CreateListing() {
   }
 
   async function handlePublish() {
-    const listing = await createListing({
-      title,
-      category,
-      subcategory: subcategory as ClothesSubcategory | ShoesSubcategory,
-      condition,
-      size,
-      sizeUnit: category === 'Shoes' ? sizeUnit : undefined,
-      measurements,
-      price: Number(price),
-      negotiable,
-      shippingOptions: shipping,
-      description,
-      photos: photoFiles,
-    })
-    setCreatedListing(listing)
-    setShowCrossPost(true)
+    setPublishError(null)
+    try {
+      const listing = await createListing({
+        title,
+        category,
+        subcategory: subcategory as ClothesSubcategory | ShoesSubcategory,
+        condition,
+        size,
+        sizeUnit: category === 'Shoes' ? sizeUnit : undefined,
+        measurements,
+        price: Number(price),
+        negotiable,
+        shippingOptions: shipping,
+        description,
+        photos: photoFiles,
+      })
+      setCreatedListing(listing)
+      setShowSuccess(true)
+    } catch (e) {
+      setPublishError(e instanceof Error ? e.message : 'Could not publish listing')
+    }
+  }
+
+  const publishStatus =
+    createStage === 'uploading_photos'
+      ? 'Uploading photos...'
+      : createStage === 'creating_listing'
+        ? 'Creating listing...'
+        : createStage === 'done'
+          ? 'Listing published.'
+          : null
+
+  if (showSuccess && createdListing) {
+    const connected = Boolean(meta?.connected)
+    return (
+      <div className="mx-auto max-w-md px-4 py-12 text-center">
+        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-accent-green/10">
+          <Icon icon="mdi:check-circle" width={36} className="text-accent-green" />
+        </div>
+        <h1 className="mb-2 font-goblin text-2xl font-bold">Listing published</h1>
+        <p className="mb-1 font-martian text-sm text-text-secondary">
+          Your drip is live on dripnsole.ph
+        </p>
+        <p className="mb-8 font-martian text-xs text-text-faint break-all">
+          /listing/{createdListing.id}
+        </p>
+        <div className="flex flex-col gap-3">
+          {connected ? (
+            <button
+              onClick={() => setShowCrossPost(true)}
+              className="w-full cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black"
+            >
+              Post to Facebook & Instagram
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate('/dashboard/settings')}
+              className="w-full cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black"
+            >
+              Connect Meta to post
+            </button>
+          )}
+          <button
+            onClick={() => navigate('/dashboard/listings')}
+            className="w-full cursor-pointer rounded-full border border-border bg-white py-3.5 font-martian text-sm font-medium transition-colors hover:bg-surface-light"
+          >
+            Maybe later
+          </button>
+        </div>
+        <p className="mt-4 font-martian text-[10px] text-text-faint">
+          You can post (or repost) anytime from the Listings tab.
+        </p>
+
+        {showCrossPost && (
+          <CrossPostModal
+            listings={[createdListing]}
+            storeHandle={myStore?.handle || ''}
+            onClose={() => {
+              setShowCrossPost(false)
+              navigate('/dashboard/listings')
+            }}
+          />
+        )}
+      </div>
+    )
   }
 
   if (showPreview) {
@@ -96,6 +177,13 @@ export default function CreateListing() {
             {isLoading ? 'Publishing...' : 'Publish Drip'}
           </button>
         </div>
+        {(publishStatus || publishError || createError) && (
+          <div
+            className={`mt-4 rounded-xl px-4 py-3 font-martian text-sm ${publishError || createError ? 'bg-red-50 text-accent-red' : 'bg-surface-light text-text-secondary'}`}
+          >
+            {publishError ?? createError ?? publishStatus}
+          </div>
+        )}
       </div>
     )
   }
@@ -315,21 +403,14 @@ export default function CreateListing() {
         >
           Preview & Publish
         </button>
+        {(publishStatus || publishError || createError) && (
+          <div
+            className={`mt-4 rounded-xl px-4 py-3 font-martian text-sm ${publishError || createError ? 'bg-red-50 text-accent-red' : 'bg-surface-light text-text-secondary'}`}
+          >
+            {publishError ?? createError ?? publishStatus}
+          </div>
+        )}
       </div>
-
-      {showCrossPost && createdListing && (
-        <CrossPostModal
-          listings={[createdListing]}
-          storeHandle="ThriftByKath"
-          onClose={() => {
-            setShowCrossPost(false)
-            navigate('/dashboard/listings')
-          }}
-          onPost={async () => {
-            await new Promise((r) => setTimeout(r, 1500))
-          }}
-        />
-      )}
     </>
   )
 }

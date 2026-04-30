@@ -47,4 +47,19 @@ describe('requireEmailVerified', () => {
     await requireEmailVerified({ userId: uid, server: { deps: { db } } } as never, reply)
     expect(status).not.toHaveBeenCalled()
   })
+
+  it('does not send when NODE_ENV is development', async () => {
+    const send = vi.fn()
+    const status = vi.fn().mockReturnValue({ send })
+    const reply = { status } as never
+    const uid = 'cccccccc-bbbb-4ccc-dddd-eeeeeeeeeeee'
+    await requireEmailVerified(
+      {
+        userId: uid,
+        server: { deps: { env: { NODE_ENV: 'development' }, db: {} } },
+      } as never,
+      reply,
+    )
+    expect(status).not.toHaveBeenCalled()
+  })
 })

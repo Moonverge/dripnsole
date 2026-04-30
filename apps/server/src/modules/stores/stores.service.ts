@@ -1,14 +1,12 @@
 import { randomUUID } from 'node:crypto'
-import type { ServerEnv } from '@dripnsole/config'
 import type { KeyLike } from 'jose'
 import type { Db } from '../../db/client.js'
 import { sanitizePlainText } from '../../lib/sanitize-text.js'
 import { isReservedHandle, normalizeHandle } from '../../lib/handle.js'
 import { conditionFromDb } from '../../lib/listing-condition.js'
-import { encryptSecret } from '../../lib/social-encrypt.js'
 import type { AuthService } from '../auth/auth.service.js'
 import type { StoresRepository } from './stores.repository.js'
-import type { ConnectSocialBody, CreateStoreBody, UpdateStoreBody } from './stores.model.js'
+import type { CreateStoreBody, UpdateStoreBody } from './stores.model.js'
 
 export function createStoresService(input: {
   db: Db
@@ -194,34 +192,6 @@ export function createStoresService(input: {
       return { kind: 'ok' as const, count: store.followerCount }
     },
 
-    async connectSocial(
-      userId: string,
-      handleRaw: string,
-      body: ConnectSocialBody,
-      env: ServerEnv,
-    ) {
-      const handle = normalizeHandle(handleRaw.replace(/^@/, ''))
-      const srows = await repo.findStoreByHandle(handle)
-      const store = srows[0]
-      if (!store || store.userId !== userId) {
-        return { kind: 'forbidden' as const }
-      }
-      const encAccess = encryptSecret(env, body.accessToken)
-      const encRefresh = body.refreshToken ? encryptSecret(env, body.refreshToken) : null
-      await repo.upsertSocialConnection({
-        userId,
-        platform: body.platform,
-        accessTokenEnc: encAccess,
-        refreshTokenEnc: encRefresh,
-        accountName: body.accountName ?? null,
-      })
-      await repo.updateStore(store.id, {
-        fbConnected: body.platform === 'facebook' ? true : store.fbConnected,
-        igConnected: body.platform === 'instagram' ? true : store.igConnected,
-        updatedAt: new Date(),
-      })
-      return { kind: 'ok' as const }
-    },
   }
 }
 

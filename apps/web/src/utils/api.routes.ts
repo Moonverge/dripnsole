@@ -19,9 +19,6 @@ export const FOLLOW_STORE_BY_HANDLE = (handle: string) =>
   `/stores/${encodeURIComponent(handle.replace(/^@/, ''))}/follow`
 export const STORE_FOLLOWERS = (handle: string) =>
   `/stores/${encodeURIComponent(handle.replace(/^@/, ''))}/followers`
-export const CONNECT_SOCIAL = (handle: string) =>
-  `/stores/${encodeURIComponent(handle.replace(/^@/, ''))}/connect-social`
-
 export const CREATE_LISTING = () => `/listings`
 export const GET_LISTINGS = () => `/listings`
 export const GET_MY_LISTINGS = () => `/listings/me`
@@ -59,6 +56,12 @@ export const UPDATE_PROFILE = () => `/users/me`
 export const CHANGE_PASSWORD = () => `/users/me/change-password`
 
 export const CREATE_REPORT = () => `/reports`
+
+export const CROSS_POST_META = () => `/cross-posts/meta`
+export const CROSS_POST_META_OAUTH_URL = () => `/cross-posts/meta/oauth-url`
+export const CROSS_POST_LISTING = (id: string) => `/cross-posts/listings/${id}`
+export const CROSS_POST_LISTING_SOLD = (id: string) => `/cross-posts/listings/${id}/sold`
+export const CROSS_POST_BULK = () => `/cross-posts/bulk`
 
 export const ADMIN_OVERVIEW = () => `/admin/overview`
 export const ADMIN_USERS = () => `/admin/users`

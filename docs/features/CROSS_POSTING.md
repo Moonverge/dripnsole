@@ -1,148 +1,385 @@
-# Cross-posting (Facebook & Instagram)
+# Cross-Posting to Facebook & Instagram
 
-Cross-posting lets sellers push a **Drip** (listing) from DripNSole to **Facebook Page** and **Instagram Business** with one-time OAuth, editable captions, and optional bulk actions—meeting buyers where they already scroll for **ukay**, thrift, and sneaker deals in the Philippines.
+DripNSole lets sellers push their listings to **Facebook Page** and **Instagram Business** with one tap — without DripNSole ever touching Meta directly. We use **Make.com** as the integration layer, the seller authorizes their own social accounts inside Make, and DripNSole simply fires a webhook when the seller chooses to post.
+
+Posting is **always opt-in and manual**. Nothing is ever cross-posted automatically.
 
 ---
 
-## One-time OAuth: Facebook Page & Instagram Business
+## Principles
 
-### What it is
+1. **Manual, not automatic.** A listing is never cross-posted just because it was published. The seller decides when (and whether) to post.
+2. **Per-listing choice.** For every post action, the seller picks which platforms to send to (FB, IG, or both) and edits the caption for that specific item.
+3. **Repost anytime.** Sellers can re-post any listing — single or in bulk — from their dashboard, with a fresh caption.
+4. **Make.com handles the social side.** DripNSole never stores Meta tokens, never goes through Meta App Review, and never touches the Graph API directly. Make is already approved by Meta; we ride that approval.
+5. **Status is tracked.** Every cross-post attempt is recorded so the seller can see what was posted, where, and when.
 
-A **single OAuth connect flow** that links the seller’s **Facebook Page** and **Instagram Business** account to DripNSole so the app can publish on their behalf.
+---
 
-### Why it exists
+## How a Seller Connects Their Socials (one-time, ~3 minutes)
 
-Filipino sellers rely on FB and IG for discovery; OAuth avoids password sharing and aligns with Meta’s supported integrations.
+The seller uses Make.com as a connector. They do this once per store.
 
-### How it works
+1. Seller opens **Dashboard → Settings → Connections**.
+2. Clicks **"Connect Facebook & Instagram via Make.com"**.
+3. DripNSole opens the official **DripNSole Make.com template** in a new tab.
+4. Seller signs in to Make (Google login, free account).
+5. Make walks them through:
+   - Allow Facebook Page access (Meta's standard popup)
+   - Allow Instagram Business access (Meta's standard popup)
+   - Activate the scenario
+6. Make displays a unique **webhook URL** at the top of the scenario.
+7. Seller copies that URL and pastes it back into DripNSole.
+8. DripNSole fires a test payload. If Make accepts it, both platforms are marked **Connected ✓**.
 
-1. Seller opens **Settings** or the cross-post prompt after publishing a Drip.
-2. Seller taps **Connect Facebook / Instagram**.
-3. Meta’s OAuth screen runs; seller selects the **Page** and approves scopes needed for posting (and IG if linked to that Page).
-4. DripNSole stores tokens securely; future cross-posts do not repeat full login unless re-auth is required.
+After this, the seller never has to touch Make again unless their Meta token expires (~every 60 days, Make notifies them by email).
 
 ### Edge cases
 
-- **OAuth token expiry:** expired or revoked tokens trigger **Reconnect**; queued posts fail until the seller reconnects.
-- **Wrong Page selected:** seller disconnects and reconnects, or picks another Page if the product supports it.
-- **IG not Business:** flow explains that IG must be a **Business/Creator** account linked to the FB Page.
+- **Seller doesn't have IG Business**: We show a help link explaining how to switch a personal IG to Business in 30 seconds.
+- **Seller's IG isn't linked to their FB Page**: Required by Meta. Help link explains how.
+- **Seller skips Make connection entirely**: All "Post to FB/IG" buttons remain visible but, when clicked, open the connection modal first.
 
 ---
 
-## Auto-generated caption format
+## Posting Flow #1: After Publishing a New Listing
 
-### What it is
+After a seller publishes a listing, the success screen offers a choice — it does not auto-open a posting modal.
 
-A default caption assembled from: **item name + ₱price + size + condition + dripnsole.ph/@handle + hashtags** — e.g. `#thriftph #ukayukay #thriftfinds #dripnsole`.
+### What the seller sees
 
-### Why it exists
+```
+✓ Listing published
 
-Consistency helps SEO-style discovery on social and drives traffic back to the authoritative **Drip** on site.
+Your drip is live on dripnsole.ph/listing/abc123
 
-### How it works
+  [ Post to Facebook & Instagram ]    [ Maybe later ]
+```
 
-1. On cross-post, the system builds the caption from live Drip fields (title, **PHP** price, size, condition, store handle/URL).
-2. Hashtags reflect Filipino thrift culture: **#thriftph**, **#ukayukay**, **#thriftfinds**, **#dripnsole**.
-3. Seller can **edit** the full caption before posting.
+- **Maybe later** → toast: "You can post to social anytime from your Listings tab." Returns to the listings dashboard.
+- **Post to Facebook & Instagram** → opens the **Cross-Post Composer** with this listing pre-loaded.
 
 ### Edge cases
 
-- **Special characters in title:** escaping or length limits on IG/FB may truncate; preview before post.
-- **Price change after draft caption:** re-sync from source of truth (Drip) when posting.
+- **Seller has no Make connection** → button text becomes **"Connect FB & IG to post"** and opens the Connections modal first.
 
 ---
 
-## Seller controls: caption & lead photo
+## Posting Flow #2: Posting an Existing Listing (single)
 
-### What it is
+Available from two places:
 
-The seller may **edit the caption** and **swap the lead photo** (hero image) used for the social post.
+1. **Dashboard → Listings tab** — every row has a small share icon; click → opens Composer for that listing.
+2. **Listing detail page (seller view only)** — a "Post to social" button next to the availability dropdown.
 
-### Why it exists
+The Composer behaves identically to Flow #1, just pre-loaded with the chosen listing.
 
-Creators know which angle sells; captions often need Taglish or extra meetup detail.
+---
 
-### How it works
+## Posting Flow #3: Bulk Posting
 
-1. In the cross-post composer, seller edits text and picks **Lead photo** from the Drip’s gallery / Spin sequence.
-2. Preview shows FB vs IG constraints where relevant.
-3. Seller confirms **Post**.
+For drop days and closet clear-outs.
+
+### What the seller sees
+
+1. From **Dashboard → Listings**, seller checks the boxes next to multiple listings (max **20** per batch).
+2. Action bar appears: **"Post 7 to FB/IG"**.
+3. Clicking opens the **Bulk Composer**:
+
+```
+Post 7 listings to social
+
+Post to:
+[✓] Facebook Page (@ThriftByKath)
+[✓] Instagram Business (@thriftbykath)
+
+Listings (7):
+┌─────────────────────────────────────────────┐
+│ [✓] [🖼] Vintage Air Max 97  · ₱4,500       │
+│        Caption: ✎ "🔥 Vintage Air Max 97…"  │
+├─────────────────────────────────────────────┤
+│ [✓] [🖼] Supreme Box Logo    · ₱6,500       │
+│        Caption: ✎ "BNWT Supreme Box Logo…"  │
+├─────────────────────────────────────────────┤
+│ [ ] [🖼] Jordan 1 Chicago    · ₱12,000      │
+│        Caption: ✎ "Jordan 1 Retro Chicago…" │
+└─────────────────────────────────────────────┘
+
+Posting interval: every 30 seconds (avoids Meta rate limits)
+
+[ Cancel ]                         [ Post 6 listings ]
+```
+
+### Bulk rules
+
+- Each listing has its **own editable caption**, pre-filled from the auto-generate template.
+- Seller can uncheck individual rows inside the bulk modal.
+- Platform selection (FB / IG / both) is **shared across all items in the batch** — sellers wanting different platforms per item should post them separately.
+- Posts are queued server-side and fired to Make with a **30-second interval** to stay safe with Meta's rate limits.
+- The modal closes after firing; status appears as a toast: "Posting 6 listings in the background — see Listings tab for status."
 
 ### Edge cases
 
-- **Lead photo violates platform rules:** rare; seller picks another image from the Drip.
+- **>20 selected** → "Bulk post is limited to 20 listings at a time." Selection capped.
+- **Mixed connection states** → If some listings belong to a sub-store with a different connection (future feature), warn before posting.
+- **One listing fails mid-batch** → other listings continue. Failed ones marked failed and visible for retry.
 
 ---
 
-## Single and bulk post
+## Posting Flow #4: Repost (single or bulk)
 
-### What it is
+A repost is just a fresh cross-post of an existing listing. Useful when the FB/IG post got buried, the seller dropped the price, or it's a new week and they want fresh visibility.
 
-**Single post:** one Drip to FB/IG. **Bulk post:** up to **20 listings** in one action.
+### Single repost
 
-### Why it exists
+- On a listing already showing **Posted ✓**, the share icon shows **"Re-post"**.
+- Clicking opens the Composer with the **previous caption pre-filled** (so the seller can tweak rather than rewrite).
+- Posting creates a **new** FB/IG post — the old one is left alone.
 
-Drop days and closet clear-outs need batch tools without spamming duplicate copy blindly.
+### Bulk repost
 
-### How it works
-
-1. **Single:** from Drip detail or post-publish prompt, seller posts one item.
-2. **Bulk:** seller selects up to **20** Dris from inventory, reviews per-item captions or applies a template, then submits.
-3. Platform queues posts respecting API rules.
+- Same selection UI as bulk post.
+- Selected listings can be a mix of "never posted" and "previously posted" — the action label updates: **"Post 5 (3 reposts, 2 new)"**.
+- Each listing's caption is independently editable in the composer, pre-filled with whatever was last used.
 
 ### Edge cases
 
-- **Bulk post failures:** partial success is reported (which Drip succeeded/failed); seller retries failed items.
-- **Rate limits (Meta API):** spacing or backoff; user sees “try again in X minutes” if throttled.
+- **Seller spam-clicks Re-post** → server enforces a 5-minute cooldown per listing.
+- **Caption template was changed since last post** → seller can pick **Reset to current template** to refresh.
 
 ---
 
-## Instagram carousel (up to 10 photos per item)
+## The Cross-Post Composer (single-item)
 
-### What it is
+This is the modal that opens for any single-listing post action.
 
-For Instagram, a **carousel** post with **up to 10 photos** per Drip when the item has enough images.
+```
+┌─────────────────────────────────────────────┐
+│  Post "Vintage Nike Air Max 97" to social   │
+├─────────────────────────────────────────────┤
+│                                             │
+│  Post to:                                   │
+│  [✓] Facebook Page (@ThriftByKath)          │
+│  [✓] Instagram Business (@thriftbykath)     │
+│                                             │
+│  Caption:                                   │
+│  ┌────────────────────────────────────────┐ │
+│  │ 🔥 Vintage Nike Air Max 97             │ │
+│  │ ₱4,500 · VNDS · Size US 10             │ │
+│  │                                        │ │
+│  │ Cop here → dripnsole.ph/@ThriftByKath  │ │
+│  │ #thriftph #ukayukay #airmax97          │ │
+│  └────────────────────────────────────────┘ │
+│  [ Reset to template ]   320 / 2200 chars   │
+│                                             │
+│  Photos to post:                            │
+│  [🖼][🖼][🖼][🖼]   (drag to reorder)        │
+│                                             │
+│  ⓘ FB posts up to 10 photos. IG carousel    │
+│    posts the first 10 in the order shown.   │
+│                                             │
+│  [ Cancel ]                  [ Post now ]   │
+└─────────────────────────────────────────────┘
+```
 
-### Why it exists
+### Composer rules
 
-Carousels increase engagement; thrift buyers swipe through defects and tags.
+- **Default platform checks** = whichever the seller has connected. Disconnected platforms greyed out with a "Connect" link.
+- **Caption** is auto-generated from the template (`title + ₱price + condition + size + storefront URL + hashtags`) and **always editable**. Edits affect this post only.
+- **Reset to template** restores the auto-generated default.
+- **Character counter** shows the most restrictive limit (Instagram = 2,200).
+- **Photo order is editable**. Default order matches the listing's photo order.
+- **Post now** is disabled if zero platforms are checked or the caption is empty.
+- No "Schedule for later" in v1 (planned for v2).
 
-### How it works
+---
 
-1. If the Drip has multiple images, IG flow suggests up to **10** in order; seller can reorder within the limit.
-2. FB may use a single link preview or multi-photo depending on API and product choice.
+## Auto-Generated Caption Template
+
+Default caption format:
+
+```
+{emoji} {title}
+₱{price} · {condition} · Size {size}{sizeUnit}
+
+Cop here → dripnsole.ph/@{handle}
+#thriftph #ukayukay #{categoryHashtag} #dripnsole
+```
+
+- `{emoji}` rotates: 🔥 / ✨ / 👀 / 🛒 (random per post)
+- `{categoryHashtag}` derived from category + subcategory (e.g. `#airmax97`, `#bapehoodie`, `#vintagetee`)
+- Sellers can override the entire template **per post** via the editor.
+- Future: a "Default caption template" per store under Settings, used for auto-fill across all listings.
+
+---
+
+## Cross-Post Status (per listing, per platform)
+
+Each listing tracks status separately for FB and IG:
+
+| Status     | Meaning                                   | Where shown                |
+| ---------- | ----------------------------------------- | -------------------------- |
+| `unposted` | Never cross-posted on this platform       | "Post" button              |
+| `posting`  | Webhook fired, awaiting confirmation      | Spinner                    |
+| `posted`   | Successfully posted; we have the post URL | ✓ pill + "View on FB/IG ↗" |
+| `failed`   | Webhook failed or Make returned error     | ❌ pill + reason + "Retry" |
+| `removed`  | Seller manually removed from FB/IG        | Greyed out                 |
+
+### Where status appears
+
+- **Listings tab row**: small pill `🟦 FB · 🟪 IG` (hover for "Posted 3h ago"), or `🔴 IG failed` for partial failures.
+- **Listing detail (seller view)**: full history — every cross-post attempt with timestamp, caption used, link to the live post.
+
+---
+
+## When a Listing is Marked SOLD
+
+The seller is given the choice — never automatic.
+
+1. Seller toggles availability to **Sold**.
+2. If the listing was previously cross-posted, a small follow-up modal asks:
+   ```
+   You marked this SOLD on DripNSole.
+   Update your FB and IG posts too?
+     [✓] Comment "SOLD ✅" on the FB post
+     [✓] Comment "SOLD ✅" on the IG post
+     [ Skip ]    [ Update ]
+   ```
+3. On confirm, DripNSole fires a `listing.sold` webhook to Make with the stored `post_id`. Make's template adds the SOLD comment.
 
 ### Edge cases
 
-- **Fewer than 2 images:** carousel may fall back to single image.
-- **Order mismatch with Spin view:** social order is independent of Spin sequence unless seller aligns them.
+- **Listing wasn't cross-posted** → no modal appears.
+- **Make scenario errors on the comment step** → seller is notified and can retry or comment manually.
 
 ---
 
-## When a Drip is marked Sold
+## What DripNSole Sends to Make (webhook payload)
 
-### What it is
+Every cross-post action fires a single HMAC-signed POST to the seller's webhook URL.
 
-When the seller marks the item **Sold**, the platform either **adds a SOLD comment** on the social post or **edits the caption** to reflect sold status (per channel capability).
+```json
+{
+  "event": "listing.cross_post",
+  "timestamp": "2026-04-17T10:30:00Z",
+  "seller": {
+    "id": "uuid",
+    "handle": "ThriftByKath"
+  },
+  "listing": {
+    "id": "uuid",
+    "title": "Vintage Nike Air Max 97",
+    "price": 4500,
+    "currency": "PHP",
+    "url": "https://dripnsole.ph/listing/abc123",
+    "photos": ["https://cdn.dripnsole.ph/.../1.jpg", "https://cdn.dripnsole.ph/.../2.jpg"]
+  },
+  "post": {
+    "platforms": ["facebook", "instagram"],
+    "caption": "🔥 Vintage Nike Air Max 97\n₱4,500 · VNDS · Size US 10\n\nCop here → dripnsole.ph/@ThriftByKath\n#thriftph #ukayukay #airmax97",
+    "cross_post_id": "uuid"
+  }
+}
+```
 
-### Why it exists
+Other events:
 
-Reduces ghosting and duplicate inquiries on old posts—common in busy ukay threads.
-
-### How it works
-
-1. Seller marks **Sold** on DripNSole.
-2. If the Drip was cross-posted and linked, background jobs update FB/IG: **comment “SOLD”** and/or **prepend/append SOLD** to caption where editing is allowed.
-
-### Edge cases
-
-- **Post not linked:** no update on social; seller may manually mark.
-- **Caption edit API failure:** retry queue; seller notified to edit manually.
+- `event: "listing.sold"` — adds a SOLD comment, includes `post_id` per platform from the original cross-post.
+- `event: "listing.removed"` — optional; deletes the FB/IG post.
+- `event: "test"` — sent by the "Test Connection" button.
 
 ---
 
-## See also
+## What Make Sends Back
 
-- [LISTING_CREATION.md](./LISTING_CREATION.md) — Drip fields, photos, Spin view, publish prompt
-- [../flows/SELLER_ONBOARDING.md](../flows/SELLER_ONBOARDING.md) — optional FB/IG connect during store setup
-- [../flows/BUYER_PURCHASE.md](../flows/BUYER_PURCHASE.md) — negotiable price and completing a sale
+The Make template's last step returns:
+
+```json
+{
+  "ok": true,
+  "results": {
+    "facebook": {
+      "status": "posted",
+      "post_id": "12345_67890",
+      "url": "https://facebook.com/ThriftByKath/posts/67890"
+    },
+    "instagram": {
+      "status": "posted",
+      "media_id": "abc123",
+      "url": "https://instagram.com/p/xyz/"
+    }
+  }
+}
+```
+
+If a platform fails:
+
+```json
+{
+  "ok": true,
+  "results": {
+    "facebook": { "status": "posted", "post_id": "...", "url": "..." },
+    "instagram": { "status": "failed", "error": "Image too large (>8MB)" }
+  }
+}
+```
+
+DripNSole stores both results and surfaces them per-platform in the UI.
+
+---
+
+## Rate Limits & Throttling
+
+To stay within Make's free tier (1,000 ops/month) and Meta's posting limits:
+
+| Limit                     | Value                  |
+| ------------------------- | ---------------------- |
+| Per listing, per platform | 1 post every 5 minutes |
+| Per seller, per hour      | 30 cross-posts         |
+| Per seller, per day       | 50 cross-posts         |
+| Bulk batch size           | 20 listings per submit |
+| Bulk inter-post delay     | 30 seconds             |
+
+Hitting a limit shows a clear message — never silently fails.
+
+---
+
+## Storage Model (DB)
+
+A `cross_posts` table tracks every attempt:
+
+| Column         | Type      | Notes                                       |
+| -------------- | --------- | ------------------------------------------- |
+| id             | uuid      | PK                                          |
+| listing_id     | uuid      | FK                                          |
+| seller_id      | uuid      | FK                                          |
+| platform       | enum      | `facebook` / `instagram`                    |
+| status         | enum      | `posting` / `posted` / `failed` / `removed` |
+| caption        | text      | Snapshot of what was posted                 |
+| remote_post_id | text      | From Make response, used for SOLD comments  |
+| remote_url     | text      | Direct link to the FB/IG post               |
+| error_message  | text      | Nullable                                    |
+| posted_at      | timestamp | Nullable until success                      |
+| created_at     | timestamp | When seller hit Post                        |
+
+A listing's "current state" pill is derived from its most recent `cross_posts` row per platform.
+
+---
+
+## What's Out of Scope (v1)
+
+- ❌ **Auto-posting on publish** — never. Always seller-initiated.
+- ❌ **Scheduled posts** (e.g. "post tomorrow at 7pm") — planned for v2.
+- ❌ **Stories or Reels** — feed posts only.
+- ❌ **TikTok / Twitter / Threads** — Make supports them but Meta is the wedge.
+- ❌ **Multiple FB Pages or IG accounts per store** — one Page + one IG per store.
+- ❌ **Editing a previously cross-posted FB/IG post from DripNSole** — seller does that on FB/IG itself, or reposts.
+- ❌ **Native Meta Graph API integration** — revisit only after >500 active sellers.
+
+---
+
+## See Also
+
+- [LISTING_CREATION.md](./LISTING_CREATION.md) — the listing flow that precedes any cross-post.
+- [../flows/SELLER_ONBOARDING.md](../flows/SELLER_ONBOARDING.md) — where the seller can optionally connect Make during initial setup.
+- [../tech/FACEBOOK_API.md](../tech/FACEBOOK_API.md) and [../tech/INSTAGRAM_API.md](../tech/INSTAGRAM_API.md) — Meta-side reference for what Make is doing under the hood.

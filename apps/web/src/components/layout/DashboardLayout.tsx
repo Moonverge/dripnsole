@@ -3,11 +3,11 @@ import { Icon } from '@iconify/react'
 import { useAuthStore } from '@/stores/auth.store'
 
 const NAV_ITEMS = [
-  { to: '/dashboard', label: 'Overview', icon: 'mdi:view-dashboard-outline' },
-  { to: '/dashboard/listings', label: 'My Listings', icon: 'mdi:view-grid-outline' },
-  { to: '/dashboard/create', label: 'Create Listing', icon: 'mdi:plus-circle-outline' },
-  { to: '/dashboard/social', label: 'Post to Social', icon: 'mdi:share-variant-outline' },
-  { to: '/dashboard/settings', label: 'Settings', icon: 'mdi:cog-outline' },
+  { to: '/dashboard', label: 'Overview', mobileLabel: 'Home', icon: 'mdi:view-dashboard-outline' },
+  { to: '/dashboard/listings', label: 'Inventory', mobileLabel: 'Items', icon: 'mdi:view-grid-outline' },
+  { to: '/dashboard/create', label: 'New Listing', mobileLabel: 'New', icon: 'mdi:plus-circle-outline' },
+  { to: '/dashboard/social', label: 'Social Hub', mobileLabel: 'Social', icon: 'mdi:share-variant-outline' },
+  { to: '/dashboard/settings', label: 'Settings', mobileLabel: 'Settings', icon: 'mdi:cog-outline' },
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -58,7 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             }`}
           >
             <Icon icon={item.icon} width={20} height={20} />
-            <span className="font-martian">{item.label.split(' ')[0]}</span>
+            <span className="font-martian">{item.mobileLabel}</span>
           </Link>
         ))}
       </nav>

@@ -1,10 +1,9 @@
 import { create } from 'zustand'
 import type { Listing } from '@/types/listing'
-import type { Store, StoreSetupPayload, SocialConnection } from '@/types/store'
+import type { Store, StoreSetupPayload } from '@/types/store'
 import { axiosInstance } from '@/utils/axios.instance'
 import {
   CHECK_HANDLE,
-  CONNECT_SOCIAL,
   CREATE_STORE,
   FOLLOW_STORE_BY_HANDLE,
   GET_STORE_BY_HANDLE,
@@ -16,7 +15,6 @@ interface StoreState {
   viewedStore: Store | null
   viewedStoreListings: Listing[]
   isLoading: boolean
-  socialConnections: SocialConnection[]
 }
 
 interface StoreActions {
@@ -24,8 +22,6 @@ interface StoreActions {
   fetchMyStore: () => Promise<void>
   fetchStoreByHandle: (handle: string) => Promise<void>
   checkHandleAvailability: (handle: string) => Promise<boolean>
-  connectSocial: (platform: 'facebook' | 'instagram') => Promise<void>
-  disconnectSocial: (platform: 'facebook' | 'instagram') => Promise<void>
   followStore: (handle: string) => Promise<void>
   unfollowStore: (handle: string) => Promise<void>
 }
@@ -57,7 +53,6 @@ export const useStoreStore = create<StoreState & StoreActions>()((set, get) => (
   viewedStore: null,
   viewedStoreListings: [],
   isLoading: false,
-  socialConnections: [],
 
   createStore: async (payload: StoreSetupPayload) => {
     set({ isLoading: true })
@@ -125,32 +120,6 @@ export const useStoreStore = create<StoreState & StoreActions>()((set, get) => (
       CHECK_HANDLE(h),
     )
     return Boolean(data.data?.available)
-  },
-
-  connectSocial: async (platform) => {
-    const my = get().myStore
-    if (!my) return
-    await axiosInstance.post(CONNECT_SOCIAL(my.handle), {
-      platform,
-      accessToken: 'placeholder',
-    })
-    set((state) => ({
-      socialConnections: [
-        ...state.socialConnections.filter((c) => c.platform !== platform),
-        {
-          platform,
-          connected: true,
-          accountName: `@${platform}`,
-          connectedAt: new Date().toISOString(),
-        },
-      ],
-    }))
-  },
-
-  disconnectSocial: async (platform) => {
-    set((state) => ({
-      socialConnections: state.socialConnections.filter((c) => c.platform !== platform),
-    }))
   },
 
   followStore: async (handle: string) => {

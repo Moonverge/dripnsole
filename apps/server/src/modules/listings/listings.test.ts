@@ -52,6 +52,32 @@ describe('listings module', () => {
     expect(res.statusCode).toBe(201)
   })
 
+  it('POST /api/listings/ — empty subcategory is allowed', async () => {
+    const { app } = await integrationContext()
+    const db = app.deps.db
+    const { token, photoId } = await loginVerifiedSeller(app, db)
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/listings/',
+      headers: protectedHeaders(token),
+      payload: listingPayload(photoId, { subcategory: '' }),
+    })
+    expect(res.statusCode).toBe(201)
+  })
+
+  it('POST /api/listings/ — empty size is allowed', async () => {
+    const { app } = await integrationContext()
+    const db = app.deps.db
+    const { token, photoId } = await loginVerifiedSeller(app, db)
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/listings/',
+      headers: protectedHeaders(token),
+      payload: listingPayload(photoId, { size: '' }),
+    })
+    expect(res.statusCode).toBe(201)
+  })
+
   it('POST /api/listings/ — unverified email returns 403', async () => {
     const { app } = await integrationContext()
     const db = app.deps.db
@@ -80,6 +106,7 @@ describe('listings module', () => {
       payload: { ...listingPayload(photoId), condition: 'BAD' },
     })
     expect(res.statusCode).toBe(400)
+    expect(JSON.parse(res.body).error).toContain('condition')
   })
 
   it('POST /api/listings/ — negative price returns 400', async () => {

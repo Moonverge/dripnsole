@@ -1,4 +1,6 @@
 import { randomUUID } from 'node:crypto'
+import { mkdir, writeFile } from 'node:fs/promises'
+import path from 'node:path'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import sharp from 'sharp'
 import type { ServerEnv } from '@dripnsole/config'
@@ -19,6 +21,13 @@ function magicMatches(buf: Buffer, mime: string): boolean {
 }
 
 export type UploadBuffer = { mime: UploadMime; buf: Buffer }
+
+export const devUploadDir = path.resolve(process.cwd(), '.dev-uploads')
+
+function localUploadBaseUrl(env: ServerEnv): string {
+  if (env.META_REDIRECT_URI) return new URL(env.META_REDIRECT_URI).origin
+  return `http://localhost:${env.PORT}`
+}
 
 export function createUploadService(repo: UploadRepository) {
   return {
@@ -88,7 +97,7 @@ export function createUploadService(repo: UploadRepository) {
           .toBuffer()
         const key = `${randomUUID()}.webp`
         const cdnBase = env.CDN_BASE_URL?.replace(/\/$/, '') ?? ''
-        const url = cdnBase ? `${cdnBase}/${key}` : `http://localhost:4000/dev-upload/${key}`
+        const url = cdnBase ? `${cdnBase}/${key}` : `${localUploadBaseUrl(env)}/dev-upload/${key}`
 
         if (client && env.CLOUDFLARE_R2_BUCKET) {
           await client.send(
@@ -100,6 +109,9 @@ export function createUploadService(repo: UploadRepository) {
               ContentDisposition: 'attachment',
             }),
           )
+        } else {
+          await mkdir(devUploadDir, { recursive: true })
+          await writeFile(path.join(devUploadDir, key), webp)
         }
 
         const inserted = await repo.insertPendingPhoto({

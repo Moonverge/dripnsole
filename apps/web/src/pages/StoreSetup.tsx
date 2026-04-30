@@ -16,7 +16,7 @@ const ALL_CATEGORIES: StoreCategory[] = [
 
 export default function StoreSetup() {
   const navigate = useNavigate()
-  const { createStore, checkHandleAvailability, connectSocial, isLoading } = useStoreStore()
+  const { createStore, checkHandleAvailability, isLoading } = useStoreStore()
   const [step, setStep] = useState(1)
 
   const [handle, setHandle] = useState('')
@@ -30,9 +30,6 @@ export default function StoreSetup() {
   const [categories, setCategories] = useState<StoreCategory[]>([])
   const [pickupInfo, setPickupInfo] = useState('')
   const [shippingInfo, setShippingInfo] = useState('')
-
-  const [fbConnected, setFbConnected] = useState(false)
-  const [igConnected, setIgConnected] = useState(false)
 
   async function checkHandle(value: string) {
     setHandle(value)
@@ -69,20 +66,10 @@ export default function StoreSetup() {
     setStep(4)
   }
 
-  async function handleConnectFb() {
-    await connectSocial('facebook')
-    setFbConnected(true)
-  }
-
-  async function handleConnectIg() {
-    await connectSocial('instagram')
-    setIgConnected(true)
-  }
-
   return (
     <div className="mx-auto max-w-lg px-4 py-8 md:py-16">
       <div className="mb-8 flex items-center justify-center gap-2">
-        {[1, 2, 3, 4].map((s) => (
+        {[1, 2, 4].map((s) => (
           <div
             key={s}
             className={`h-2 rounded-full transition-all ${s === step ? 'w-8 bg-brand' : s < step ? 'w-8 bg-black' : 'w-8 bg-border'}`}
@@ -240,64 +227,9 @@ export default function StoreSetup() {
               Back
             </button>
             <button
-              disabled={!storeName || categories.length === 0}
-              onClick={() => setStep(3)}
-              className="flex-1 cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black disabled:opacity-40"
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div>
-          <h1 className="mb-2 font-goblin text-2xl font-bold md:text-3xl">Connect Social</h1>
-          <p className="mb-6 font-martian text-sm text-text-muted">
-            Cross-post your drips to Facebook and Instagram. You can skip this and connect later.
-          </p>
-
-          <div className="mb-4 flex flex-col gap-3">
-            <button
-              onClick={handleConnectFb}
-              disabled={fbConnected}
-              className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border px-5 py-4 font-martian text-sm transition-colors ${fbConnected ? 'border-accent-green bg-green-50 text-accent-green' : 'border-border hover:bg-surface-light'}`}
-            >
-              <Icon
-                icon="mdi:facebook"
-                width={24}
-                className={fbConnected ? 'text-accent-green' : 'text-[#1877F2]'}
-              />
-              {fbConnected ? 'Facebook Page Connected' : 'Connect Facebook Page'}
-              {fbConnected && <Icon icon="mdi:check" width={20} className="ml-auto" />}
-            </button>
-
-            <button
-              onClick={handleConnectIg}
-              disabled={igConnected}
-              className={`flex w-full cursor-pointer items-center gap-3 rounded-xl border px-5 py-4 font-martian text-sm transition-colors ${igConnected ? 'border-accent-green bg-green-50 text-accent-green' : 'border-border hover:bg-surface-light'}`}
-            >
-              <Icon
-                icon="mdi:instagram"
-                width={24}
-                className={igConnected ? 'text-accent-green' : 'text-[#E4405F]'}
-              />
-              {igConnected ? 'Instagram Connected' : 'Connect Instagram Business'}
-              {igConnected && <Icon icon="mdi:check" width={20} className="ml-auto" />}
-            </button>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => setStep(2)}
-              className="flex-1 cursor-pointer rounded-full border border-border bg-white py-3.5 font-martian text-sm font-medium transition-colors hover:bg-surface-light"
-            >
-              Back
-            </button>
-            <button
+              disabled={!storeName || categories.length === 0 || isLoading}
               onClick={handleFinish}
-              disabled={isLoading}
-              className="flex-1 cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black disabled:opacity-50"
+              className="flex-1 cursor-pointer rounded-full bg-brand py-3.5 font-martian text-sm font-medium text-white transition-colors hover:bg-black disabled:opacity-40"
             >
               {isLoading ? 'Creating...' : 'Create Store'}
             </button>
@@ -315,7 +247,8 @@ export default function StoreSetup() {
             dripnsole.ph/<span className="font-bold text-black">@{handle}</span>
           </p>
           <p className="mb-8 font-martian text-sm text-text-muted">
-            Start listing your drips and reach buyers.
+            Start listing your drips. You can connect Facebook & Instagram for one-tap cross-posting
+            anytime from <span className="text-black">Settings → Connections</span>.
           </p>
           <div className="flex flex-col gap-3">
             <button

@@ -10,7 +10,6 @@ import {
   smallint,
   text,
   timestamp,
-  unique,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
@@ -68,6 +67,12 @@ export const reservationStatusEnum = pgEnum('reservation_status', [
   'cancelled',
 ])
 export const socialPlatformEnum = pgEnum('social_platform', ['facebook', 'instagram'])
+export const crossPostStatusEnum = pgEnum('cross_post_status', [
+  'posting',
+  'posted',
+  'failed',
+  'removed',
+])
 export const notificationTypeEnum = pgEnum('notification_type', [
   'new_comment',
   'new_dm',
@@ -129,6 +134,12 @@ export const stores = pgTable('stores', {
   followerCount: integer('follower_count').notNull().default(0),
   fbConnected: boolean('fb_connected').notNull().default(false),
   igConnected: boolean('ig_connected').notNull().default(false),
+  metaPageId: text('meta_page_id'),
+  metaPageName: text('meta_page_name'),
+  metaIgUserId: text('meta_ig_user_id'),
+  metaPageTokenEncrypted: text('meta_page_token_encrypted'),
+  metaTokenExpiresAt: timestamp('meta_token_expires_at', { withTimezone: true }),
+  metaConnectedAt: timestamp('meta_connected_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
@@ -333,25 +344,6 @@ export const notifications = pgTable('notifications', {
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
-export const socialConnections = pgTable(
-  'social_connections',
-  {
-    id: uuid('id').primaryKey().defaultRandom(),
-    userId: uuid('user_id')
-      .notNull()
-      .references(() => users.id, { onDelete: 'cascade' }),
-    platform: socialPlatformEnum('platform').notNull(),
-    accessTokenEnc: text('access_token_enc').notNull(),
-    refreshTokenEnc: text('refresh_token_enc'),
-    accountName: text('account_name'),
-    connectedAt: timestamp('connected_at', { withTimezone: true }).notNull().defaultNow(),
-    expiresAt: timestamp('expires_at', { withTimezone: true }),
-  },
-  (t) => ({
-    uqUserPlatform: unique('uq_social_connections_user_platform').on(t.userId, t.platform),
-  }),
-)
-
 export const reports = pgTable('reports', {
   id: uuid('id').primaryKey().defaultRandom(),
   reporterId: uuid('reporter_id')
@@ -364,6 +356,31 @@ export const reports = pgTable('reports', {
   status: reportStatusEnum('status').notNull().default('pending'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
 })
+
+export const crossPosts = pgTable(
+  'cross_posts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    listingId: uuid('listing_id')
+      .notNull()
+      .references(() => listings.id, { onDelete: 'cascade' }),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id, { onDelete: 'cascade' }),
+    sellerId: uuid('seller_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    platform: socialPlatformEnum('platform').notNull(),
+    status: crossPostStatusEnum('status').notNull().default('posting'),
+    caption: text('caption').notNull(),
+    remotePostId: text('remote_post_id'),
+    remoteUrl: text('remote_url'),
+    errorMessage: text('error_message'),
+    postedAt: timestamp('posted_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  () => ({}),
+)
 
 export const platformSettings = pgTable('platform_settings', {
   key: text('key').primaryKey(),

@@ -59,6 +59,9 @@ export const requireEmailVerified: preHandlerHookHandler = async (request, reply
   if (!uid) {
     return reply.status(401).send({ success: false, error: 'Unauthorized', code: 'AUTH' })
   }
+  if (request.server.deps.env?.NODE_ENV === 'development') {
+    return
+  }
   const db = request.server.deps.db
   const row = await db
     .select({ emailVerified: users.emailVerified })
